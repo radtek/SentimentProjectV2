@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import machineLearning.VectorAttributes;
@@ -17,6 +18,7 @@ import machineLearning.VectorAttributes;
 
 import preProcessing.ArticleCategoryGenerator;
 import preProcessing.NewsArticleWithPosTaggedWords;
+import preProcessing.TextFileHandler;
 import newsAPI.JsonHandler.MyFieldNamingStrategy;
 import annotationStatistics.AnnotationValidator;
 
@@ -26,27 +28,14 @@ import com.google.gson.JsonSyntaxException;
 
 public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 
-	public String analyticClues = "abg,abgsc,arctic,swedbank,first,dnb markets,dnbnor markets,seb,enskilda,carnegie,"
-			+ "pareto,orion,investtech,platou,netfonds,danske bank,christiania,fondsfinans,handelsbanken,nordea,goldman,j.p. morgan,"
-			+ "morgan stanley,ubs,citibank,citigroup,merrill lynch,credit suisse,odin,meisingsets,dovre,elphi,holberg";
 	
-	public String recommenderClues = "kjøp,salg,hold,kursmål,kursmålet,kursmålene,anbefaler,anbefaling,anbefalingen,anbefalingene,senioranalytiker,senioranalytikeren,senioranalytikerene,"
-			+ "analytiker,analytiken,analytikene,aksjestrateg,aksjestrategen,aksjestrategene,porteføljeforvalter,porteføljeforvalteren,"
-			+ "porteføljeforvalterne,seniorporteføljeforvalter,seniorporteføljeforvalteren,seniorporteføljeforvalterne,analyse,"
-			+ "analysen,analysene,forvalter,forvalteren,forvalterne,fondsforvalter,fondsforvalteren,fondsforvalterne,meglerhus,"
-			+ "meglerhuset,meglerhusene,tallknuser,tallknuseren,tallknuserne";
+	public String[] analyticClues; 
+	public String[] recommenderClues;
 	
+	public  String[] positiveTitleWordsClues;
+	public  String[] negativeTitleWordsClues;
 	
-	public static String positiveTitleWordsClues = "anbefaler,"+"anbefaling,"+"best ,"+" best,"+"beste ,"+" beste,"+"god ,"+"gode ,"+"godt ,"+" god,"+" gode,"+" godt,"+"bra,"+"stor,"+"kjøp,"+"selger ikke,"+" kjempe,"+"vant,"+"vinner,"+"oppside,"+"opptur,"+
-	"oppgang,"+"børsrally,"+"favoritt,"+"flott,"+" sikre,"+" sikrer,"+"bonus,"+"fest,"+"suser,"+"knuser,"+"strålende,"+"pengebinge,"+"solid,"+"sterk,"+"liker,"+"hotteste,"+"gave,"+"rekord,"+"kraftig,"+"suksess,"+"kontroll,"+"analysesjef,"+"analytiker,"+
-	"fenomenalt,"+"betydelig,"+"gigant,"+"kjøpskandidat,"+"meglerhus,"+"kursoppgang,"+"rakett,"+"skamroser,"+"roser,"+"rett til værs,"+"til værs,"+"rett opp,"+"overbevise,"+"håve,"+"hamstre";
-	
-	public static String negativeTitleWordsClues = "elendig,"+"knallrød,"+"svikt,"+"svak ,"+" svak,"+"kaster,"+" fare,"+"fare,"+"juks,"+"tapt ,"+" tapt,"+"tape ,"+" tape,"+" taper,"+"taper ,"+"verdsetter ikke,"+"ikke tilfreds,"+"farlig,"+"uro,"+"frykt,"+
-			"smell,"+"krise,"+"stygg,"+"tap ,"+" tap,"+"faller,"+"nerver,"+"trøbbel,"+"trist,"+"bekymr,"+"skittent,"+"tryne,"+"galt ,"+" galt,"+"gale ,"+" gale,"+"gal ,"+" gal,"+"advare,"+"stup,"+"børsras,"+"skuffende,"+"rundlurer,"+"brems,"+"skrekk,"+"narr,"+
-			"gruses,"+"katostrofal,"+"katastrofe,"+"tullebukk,"+"skamme,"+"slurv,"+"nervøs,"+"dumpe";
-	
-	
-	public String valenceShifters = "ikke,ei,nei,aldri,ingen,intet,umulig,alt annet enn,ingenlunde,langt ifra,langt fra,minst av alt";
+	public String[] valenceShifters;
 	
 	
 	public int numberOfAdjectives;
@@ -67,14 +56,12 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	public boolean analyticsMentioned;
 	public boolean recommenderCluesMentioned;
 	
-	public boolean isPositiveTitle;
-	public boolean isNegativeTitle;
+	public boolean hasPositiveTitle;
+	public boolean hasNegativeTitle;
 	
 	public int negativeTitleCount;
 	public int positiveTitleCount;
 	
-
-
 	public int numberOfPositiveAdjectives;
 	public int numberOfNegativeAdjectives;
 	public int numberOfNeutralAdjectives;
@@ -90,23 +77,27 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	public boolean isOkonomi;
 	
 
-	public NewsArticleWithFeatures(){
-		
+	public NewsArticleWithFeatures() throws IOException{
+		TextFileHandler tfh = new TextFileHandler();
+		this.analyticClues = tfh.getAnalyticalClues();
+		this.recommenderClues = tfh.getReccomendationClues();
+		this.positiveTitleWordsClues = tfh.getPositiveTitleClues();
+		this.negativeTitleWordsClues = tfh.getNegativeTitleClues();
+		this.valenceShifters = tfh.getValenceShifter();
 		
 	}
+	
 	
 	//GET NUMBER OF EXCLAMATION MARKS
 	public int getNumberOfExclamationMarks(NewsArticleWithPosTaggedWords nawpti){
 		int exclamationMarks = 0;
 		
 		if(nawpti.getPosTaggedTitle().getPosTaggedWords()!=null){
-			
 			for(int i = 0; i<nawpti.getPosTaggedTitle().getPosTaggedWords().length; i++){
 				if(nawpti.getPosTaggedTitle().getPosTaggedWords()[i].input.equals("!")){
 					exclamationMarks++;
 				}
 			}
-			
 		}
 		if(nawpti.getPosTaggedLeadText().getPosTaggedWords()!=null){
 			for(int i = 0; i<nawpti.getPosTaggedLeadText().getPosTaggedWords().length; i++){
@@ -115,7 +106,6 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 				}
 			}
 		}
-		
 		if(nawpti.getPosTaggedMainText().getPosTaggedWords()!=null){
 			for(int i = 0; i<nawpti.getPosTaggedMainText().getPosTaggedWords().length; i++){
 				if(nawpti.getPosTaggedMainText().getPosTaggedWords()[i].input.equals("!")){
@@ -126,7 +116,67 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 		}
 		return exclamationMarks;
 	}
-	
+	//GET NUMBER OF QUESTION MARKS 
+	public int getNumberOfQuestionMarks(NewsArticleWithPosTaggedWords nawpti){
+			int questionMarks = 0;
+			
+			if(nawpti.getPosTaggedTitle().getPosTaggedWords()!=null){
+				for(int i = 0; i<nawpti.getPosTaggedTitle().getPosTaggedWords().length; i++){
+					if(nawpti.getPosTaggedTitle().getPosTaggedWords()[i].input.equals("?")){
+						questionMarks++;
+					}
+				}
+				
+			}
+			if(nawpti.getPosTaggedLeadText().getPosTaggedWords()!=null){
+				for(int i = 0; i<nawpti.getPosTaggedLeadText().getPosTaggedWords().length; i++){
+					if(nawpti.getPosTaggedLeadText().getPosTaggedWords()[i].input.equals("?")){
+						questionMarks++;
+					}
+				}
+						
+					}
+			if(nawpti.getPosTaggedMainText().getPosTaggedWords()!=null){
+				for(int i = 0; i<nawpti.getPosTaggedMainText().getPosTaggedWords().length; i++){
+					if(nawpti.getPosTaggedMainText().getPosTaggedWords()[i].input.equals("?")){
+						questionMarks++;
+					}
+				}
+				
+			}
+			return questionMarks;
+		}
+	//RETURNS NUMBER OF QUOTES IN TEXT
+		public int getNumberOfQuotes(NewsArticleWithPosTaggedWords nawpti){
+			int quotes = 0;
+			
+			if(nawpti.getPosTaggedTitle().getPosTaggedWords()!=null){
+				for(int i = 0; i<nawpti.getPosTaggedTitle().getPosTaggedWords().length; i++){
+					if(nawpti.getPosTaggedTitle().getPosTaggedWords()[i].input.equals(" -")){
+						quotes++;
+					}
+				}
+				
+			}
+			if(nawpti.getPosTaggedLeadText().getPosTaggedWords()!=null){
+				for(int i = 0; i<nawpti.getPosTaggedLeadText().getPosTaggedWords().length; i++){
+					if(nawpti.getPosTaggedLeadText().getPosTaggedWords()[i].input.equals(" -")){
+						quotes++;
+					}
+				}
+						
+					}
+			if(nawpti.getPosTaggedMainText().getPosTaggedWords()!=null){
+				for(int i = 0; i<nawpti.getPosTaggedMainText().getPosTaggedWords().length; i++){
+					if(nawpti.getPosTaggedMainText().getPosTaggedWords()[i].input.equals(" -")){
+						quotes++;
+					}
+				}
+				
+			}
+			
+			return quotes;
+		}
 	
 	//RETURNS WHETHER OR NOT A ANALYTIC COMPANY IS REFERED IN TEXT
 	public boolean getAnalyticsMentioned(NewsArticleWithPosTaggedWords nawpti, ArrayList<String> analyticWords){
@@ -140,7 +190,6 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 					}
 				}
 			}
-			
 		}
 		if(nawpti.getPosTaggedLeadText().getPosTaggedWords()!=null){
 			for(int i = 0; i<nawpti.getPosTaggedLeadText().getPosTaggedWords().length; i++){
@@ -149,9 +198,8 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 						analyticsMentioned = true;
 					}
 				}	
-			}
-				
-			}
+			}	
+		}
 		if(nawpti.getPosTaggedMainText().getPosTaggedWords()!=null){
 			for(int i = 0; i<nawpti.getPosTaggedMainText().getPosTaggedWords().length; i++){
 				for(int j=0; j<analyticWords.size(); j++){
@@ -161,77 +209,10 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 					
 				}
 			}
-			
 		}
-		
 		return analyticsMentioned;
 	}
-	
-	//RETURNS NUMBER OF QUESTION MARKS 
-	public int getNumberOfQuestionMarks(NewsArticleWithPosTaggedWords nawpti){
-		int questionMarks = 0;
-		
-		if(nawpti.getPosTaggedTitle().getPosTaggedWords()!=null){
-			for(int i = 0; i<nawpti.getPosTaggedTitle().getPosTaggedWords().length; i++){
-				if(nawpti.getPosTaggedTitle().getPosTaggedWords()[i].input.equals("?")){
-					questionMarks++;
-				}
-			}
-			
-		}
-		if(nawpti.getPosTaggedLeadText().getPosTaggedWords()!=null){
-			for(int i = 0; i<nawpti.getPosTaggedLeadText().getPosTaggedWords().length; i++){
-				if(nawpti.getPosTaggedLeadText().getPosTaggedWords()[i].input.equals("?")){
-					questionMarks++;
-				}
-			}
-					
-				}
-		if(nawpti.getPosTaggedMainText().getPosTaggedWords()!=null){
-			for(int i = 0; i<nawpti.getPosTaggedMainText().getPosTaggedWords().length; i++){
-				if(nawpti.getPosTaggedMainText().getPosTaggedWords()[i].input.equals("?")){
-					questionMarks++;
-				}
-			}
-			
-		}
-		return questionMarks;
-	}
-	
-	//RETURNS NUMBER OF QUOTES IN TEXT
-	public int getNumberOfQuotes(NewsArticleWithPosTaggedWords nawpti){
-		int quotes = 0;
-		
-		if(nawpti.getPosTaggedTitle().getPosTaggedWords()!=null){
-			for(int i = 0; i<nawpti.getPosTaggedTitle().getPosTaggedWords().length; i++){
-				if(nawpti.getPosTaggedTitle().getPosTaggedWords()[i].input.equals(" -")){
-					quotes++;
-				}
-			}
-			
-		}
-		if(nawpti.getPosTaggedLeadText().getPosTaggedWords()!=null){
-			for(int i = 0; i<nawpti.getPosTaggedLeadText().getPosTaggedWords().length; i++){
-				if(nawpti.getPosTaggedLeadText().getPosTaggedWords()[i].input.equals(" -")){
-					quotes++;
-				}
-			}
-					
-				}
-		if(nawpti.getPosTaggedMainText().getPosTaggedWords()!=null){
-			for(int i = 0; i<nawpti.getPosTaggedMainText().getPosTaggedWords().length; i++){
-				if(nawpti.getPosTaggedMainText().getPosTaggedWords()[i].input.equals(" -")){
-					quotes++;
-				}
-			}
-			
-		}
-		
-		return quotes;
-	}
-	
-	
-	
+
 	//RETURNS NUMBER OF ADJECTIVES IN TEXT
 	public int getNumberOfAdjectives(NewsArticleWithPosTaggedWords nawpti){
 		int numberOfAdj = 0;
@@ -298,13 +279,10 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	
 	//RETURNS NUMBER OF VERBS
 	public int getNumberOfVerbs(NewsArticleWithPosTaggedWords nawpti){
-		
 		int numberOfVerbs = 0;
-		//System.out.println(ptw.getPosTaggedWords().length);
-		
 		if(nawpti.getPosTaggedTitle().getPosTaggedWords()!=null){
 			for(int i = 0; i<nawpti.getPosTaggedTitle().getPosTaggedWords().length; i++){
-				//System.out.println("Ordklasse " + ptw.getPosTaggedWords()[i].wordclass);
+				
 				if(nawpti.getPosTaggedTitle().getPosTaggedWords()[i].wordclass.equals("verb")){
 					numberOfVerbs++;
 				}
@@ -369,10 +347,8 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	}
 	
 	public boolean getAnalyticsMentioned(NewsArticleWithPosTaggedWords nawpti){
-		
 		boolean am = false;
-		String[] analytics = analyticClues.split(",");
-		
+		String[] analytics = this.analyticClues;
 		if(nawpti.getPosTaggedTitle().getPosTaggedWords()!=null){
 			for(int i = 0; i<nawpti.getPosTaggedTitle().getPosTaggedWords().length; i++){
 				for(int j=0; j<analytics.length; j++){
@@ -411,7 +387,7 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	public boolean getRecommenderMentioned(NewsArticleWithPosTaggedWords nawpti){
 		
 		boolean rm = false;
-		String[] analytics = recommenderClues.split(",");
+		String[] analytics = this.recommenderClues;
 		
 		if(nawpti.getPosTaggedTitle().getPosTaggedWords()!=null){
 			for(int i = 0; i<nawpti.getPosTaggedTitle().getPosTaggedWords().length; i++){
@@ -458,13 +434,12 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	public boolean isNegativeWordTitle(NewsArticleWithPosTaggedWords nawpti){
 		if(getNegativeWordTitleCount(nawpti) > 0){
 			System.out.println("Negativ in title" + nawpti.getTitle());
-		}
-				
+		}	
 		return getNegativeWordTitleCount(nawpti) > 0;
 	}
 	
 	public int getPositiveWordTitleCount(NewsArticleWithPosTaggedWords nawpti){
-		String[] analytics = positiveTitleWordsClues.split(",");
+		String[] analytics = this.positiveTitleWordsClues;
 		int counter = 0;
 		for (String string : analytics) {
 			if (nawpti.getTitle().contains(string)) {
@@ -476,7 +451,7 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	}
 	
 	public int getNegativeWordTitleCount(NewsArticleWithPosTaggedWords nawpti){
-		String[] analytics = negativeTitleWordsClues.split(",");
+		String[] analytics = negativeTitleWordsClues;
 		int counter = 0;
 		for (String string : analytics) {
 			if (nawpti.getTitle().contains(string)) {
@@ -488,7 +463,7 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	}
 	
 	
-	
+	//GENERATES VECTOR BASED ON ARTICLE FEATURES
 	public FeaturesVektor getVector(VectorAttributes va, int sentimentTypeToClassify) throws IOException{
 		FeaturesVektor vector = new FeaturesVektor();
 		
@@ -619,41 +594,6 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	}
 	
 	
-	
-	public String getAnalyticClues() {
-		return analyticClues;
-	}
-
-	public void setAnalyticClues(String analyticClues) {
-		this.analyticClues = analyticClues;
-	}
-
-	public String getRecommenderClues() {
-		return recommenderClues;
-	}
-
-	public void setRecommenderClues(String recommenderClues) {
-		this.recommenderClues = recommenderClues;
-	}
-
-	public int getLengthOfText(String text){
-		return text.length();
-	}
-	public boolean isPositiveTitle() {
-		return isPositiveTitle;
-	}
-
-	public void setPositiveTitle(boolean isPositiveTitle) {
-		this.isPositiveTitle = isPositiveTitle;
-	}
-
-	public boolean isNegativeTitle() {
-		return isNegativeTitle;
-	}
-
-	public void setNegativeTitle(boolean isNegativeTitle) {
-		this.isNegativeTitle = isNegativeTitle;
-	}
 	//RETURNS AVERAGE LENGTH OF WORDS IN ARTICLE
 	public double getAverageLengthOfWords(NewsArticleWithPosTaggedWords nawpti){
 		String totalText = nawpti.getTitle() + nawpti.getlead_text() + nawpti.getText();
@@ -754,14 +694,8 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	
 	
 	
-	public String getValenceShifters() {
-			return valenceShifters;
-	}
 
-	public void setValenceShifters(String valenceShifters) {
-			this.valenceShifters = valenceShifters;
-	}
-
+	/*INITIALIZES NEWS ARTICLE WITH FEATURES*/
 	public NewsArticleWithFeatures createFeatureArticle(NewsArticleWithPosTaggedWords inputArticle) throws JsonSyntaxException, IOException{
 		NewsArticleWithFeatures nawf = new NewsArticleWithFeatures();
 		
@@ -831,7 +765,25 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 		return nawf;
 	}
 	
-	
+/* GETTERS AND SETTERS */ 
+	public int getLengthOfText(String text){
+		return text.length();
+	}
+	public boolean isPositiveTitle() {
+		return hasPositiveTitle;
+	}
+
+	public void setPositiveTitle(boolean isPositiveTitle) {
+		this.hasPositiveTitle = isPositiveTitle;
+	}
+
+	public boolean isNegativeTitle() {
+		return hasNegativeTitle;
+	}
+
+	public void setNegativeTitle(boolean hasNegativeTitle) {
+		this.hasNegativeTitle = hasNegativeTitle;
+	}
 	public int getNumberOfPositiveVerbs() {
 		return numberOfPositiveVerbs;
 	}
@@ -863,9 +815,6 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	public void setNumberOfNegativeAdverbs(int numberOfNegativeAdverbs) {
 		this.numberOfNegativeAdverbs = numberOfNegativeAdverbs;
 	}
-
-		
-	
 	public int getNumberOfAdjectives() {
 		return numberOfAdjectives;
 	}
@@ -993,10 +942,6 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	public void setBors(boolean isBors) {
 		this.isBors = isBors;
 	}
-
-
-
-
 	public int getNegativeTitleCount() {
 		return negativeTitleCount;
 	}
@@ -1027,40 +972,51 @@ public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
 	public void setOkonomi(boolean isOkonomi) {
 		this.isOkonomi = isOkonomi;
 	}
-	
-	public String getPositiveTitleWordsClues() {
+	public String[] getAnalyticClues() {
+		return analyticClues;
+	}
+	public void setAnalyticClues(String[] analyticClues) {
+		this.analyticClues = analyticClues;
+	}
+	public String[] getRecommenderClues() {
+		return recommenderClues;
+	}
+	public void setRecommenderClues(String[] recommenderClues) {
+		this.recommenderClues = recommenderClues;
+	}
+	public String[] getPositiveTitleWordsClues() {
 		return positiveTitleWordsClues;
 	}
-
-	public void setPositiveTitleWordsClues(String positiveTitleWordsClues) {
+	public void setPositiveTitleWordsClues(String[] positiveTitleWordsClues) {
 		this.positiveTitleWordsClues = positiveTitleWordsClues;
 	}
-
-	public String getNegativeTitleWordsClues() {
+	public String[] getNegativeTitleWordsClues() {
 		return negativeTitleWordsClues;
 	}
 
-	public void setNegativeTitleWordsClues(String negativeTitleWordsClues) {
+
+	public void setNegativeTitleWordsClues(String[] negativeTitleWordsClues) {
 		this.negativeTitleWordsClues = negativeTitleWordsClues;
 	}
-	
-	public static void main(String[] args) throws IOException{
-//		JsonHandler handler = new JsonHandler();
-//		Gson g = new Gson();
-		
-		
-	    //NewsArticlesWithPostTaggedItems articleSource = 
-				
-//				
-//		NewsArticleWithFeatures nawf = new NewsArticleWithFeatures();
-//		System.out.println(nawf.getPositiveTitleWordsClues());
-//		System.out.println(nawf.getNegativeTitleWordsClues());
-        		
+
+
+	public String[] getValenceShifters() {
+		return valenceShifters;
 	}
 
 
+	public void setValenceShifters(String[] valenceShifters) {
+		this.valenceShifters = valenceShifters;
+	}
+
 	
 	
+	
+	public static void main(String[] args) throws IOException{
+		NewsArticleWithFeatures newsArticleWithFeatures = new NewsArticleWithFeatures();
+
+        		
+	}
 	
 	
 	

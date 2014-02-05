@@ -19,7 +19,7 @@ public class SentimentWordExtractor {
 	}
 	
 	/* RETURNS NUMBER OF SENTIMENT BEARING WORDS FROM ARTICLE */
-	public int[] getNumberOfSentimentBearingWordsWithValenceShifting(NewsArticleWithPosTaggedWords nawpti, String valenceShifters, String wordclass, String value) throws JsonSyntaxException, IOException{
+	public int[] getNumberOfSentimentBearingWordsWithValenceShifting(NewsArticleWithPosTaggedWords nawpti, String[] valenceShifters, String wordclass, String value) throws JsonSyntaxException, IOException{
 		int numberOfPositiveAdjectives = 0;
 		int numberOfNegativeAdjectives = 0;
 		
@@ -38,8 +38,8 @@ public class SentimentWordExtractor {
 		}
 		
 		ArrayList<String> valenceShifterList = new ArrayList<String>();
-		for(int i=0; i<valenceShifters.split(",").length; i++){
-			valenceShifterList.add(valenceShifters.split(",")[i]);
+		for(int i=0; i<valenceShifters.length; i++){
+			valenceShifterList.add(valenceShifters[i]);
 		}
 		
 		if(nawpti.getAllPosTaggedWords() != null){

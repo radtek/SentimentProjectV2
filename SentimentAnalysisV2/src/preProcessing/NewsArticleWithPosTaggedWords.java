@@ -1,9 +1,9 @@
 package preProcessing;
 
 import java.util.ArrayList;
-import newsAPI.NewsArticleRaw;
 
-public class NewsArticleWithPosTaggedWords extends NewsArticleRaw {
+
+public class NewsArticleWithPosTaggedWords extends NewsArticleWithTickers {
 
 	
 	public PosTaggedWords posTaggedTitle;

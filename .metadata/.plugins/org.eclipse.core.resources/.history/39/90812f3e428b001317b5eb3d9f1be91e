@@ -1,0 +1,75 @@
+package preProcessing;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+
+
+public class TextFileHandler {
+	
+	
+	//HANDLES ALL RESOURCES THAT ARE SAVED AS TEXT FILES e.g WORDLISTS
+	
+	public TextFileHandler(){
+		
+	}
+	
+	public String getTextFileAsString(String path, Charset encoding) throws IOException 
+	{
+		byte[] encoded = Files.readAllBytes(Paths.get(path));
+		return encoding.decode(ByteBuffer.wrap(encoded)).toString();
+	}
+	
+	public String getPath() {
+	    String path = String.format("%s/%s", System.getProperty("user.dir"), this.getClass().getPackage().getName().replace(".", "/"));
+	    return path.split("/")[0]+"/ArticleResources/";
+	}
+	
+	
+	//GET ANALYTIC CLUES FROM FILE AS STRINGLIST
+	public String[] getAnalyticalClues() throws IOException{
+			String[] analyticArticleCluesList = null;
+			String analyticArticleClues = this.getTextFileAsString(this.getPath()+"/WordListsOfImportance/AnalyticalArticleClues.txt", StandardCharsets.UTF_8);
+			analyticArticleCluesList = analyticArticleClues.split(",");
+			return analyticArticleCluesList;
+	}
+	
+	//GET RECCOMENDATION CLUES FROM FILE AS STRINGLIST
+	public String[] getReccomendationClues() throws IOException{
+			String[] reccomenderClueList = null;
+			String reccomenderClues = this.getTextFileAsString(this.getPath()+"/WordListsOfImportance/ReccomendationArticleClues.txt", StandardCharsets.UTF_8);
+			reccomenderClueList = reccomenderClues.split(",");
+			return reccomenderClueList;
+	}
+	
+	//GET LIST OF VALENCE SHIFTERS FROM FILE AS STRINGLIST
+	public String[] getValenceShifter() throws IOException{
+		String[] valenceShifterList = null;
+		String valenceShifters = this.getTextFileAsString(this.getPath()+"/WordListsOfImportance/ReccomendationArticleClues.txt", StandardCharsets.UTF_8);
+		valenceShifterList = valenceShifters.split(",");
+		return valenceShifterList;
+	}
+	
+	//GET POSITIVE TITLE CLUES FROM FILE AS STRINGLIST
+	public String[] getPositiveTitleClues() throws IOException{
+		String[] positiveTitleCluesList = null;
+		String positiveTitleClues = this.getTextFileAsString(this.getPath()+"/WordListsOfImportance/ReccomendationArticleClues.txt", StandardCharsets.UTF_8);
+		positiveTitleCluesList = positiveTitleClues.split(",");
+		return positiveTitleCluesList;
+	}
+	
+	//GET NEGATIVE TITLE CLUES FROM FILE AS STRINGLIST
+	public String[] getNegativeTitleClues() throws IOException{
+		String[] negativeTitleCluesList = null;
+		String analyticArticleClues = this.getTextFileAsString(this.getPath()+"/WordListsOfImportance/ReccomendationArticleClues.txt", StandardCharsets.UTF_8);
+		analyticArticleCluesList = analyticArticleClues.split(",");
+		return analyticArticleCluesList;
+	}
+
+}

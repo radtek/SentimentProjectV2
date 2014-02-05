@@ -1,0 +1,14 @@
+package preProcessing;
+
+public class TextFileHandler {
+	
+	
+	
+	
+	public TextFileHandler(){
+		
+	}
+	
+	
+
+}
