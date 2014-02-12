@@ -10,10 +10,7 @@ public class NewsArticlesWithTickers {
 	
 	public NewsArticlesWithTickers(){
 		this.newsArticlesWithTickers = new ArrayList<NewsArticleWithTickers>();
-		
 	}
-
-
 	public ArrayList<NewsArticleWithTickers> getNewsArticlesWithTickers() {
 		return newsArticlesWithTickers;
 	}
@@ -22,8 +19,5 @@ public class NewsArticlesWithTickers {
 			ArrayList<NewsArticleWithTickers> newsArticlesWithTickers) {
 		this.newsArticlesWithTickers = newsArticlesWithTickers;
 	}
-	
-	
-	
 	
 }

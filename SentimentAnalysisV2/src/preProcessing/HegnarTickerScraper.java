@@ -34,6 +34,9 @@ public class HegnarTickerScraper {
 	public String AuthorName;
 	public ArrayList<String> keywordsList;
 	
+	public HegnarTickerScraper() {
+		
+	}
 	
 	public HegnarTickerScraper(String url) throws IOException{
 		//Adds string of tickers to object
@@ -139,7 +142,7 @@ public class HegnarTickerScraper {
 	// WRITE ARTICLES TO FILE
 	public void writeToFile(String text) throws IOException{
 		Writer out = new BufferedWriter(new OutputStreamWriter(
-			    new FileOutputStream("/Users/Lars/Documents/workspace/HegnarTickerScrape/TextFiles/ArticlesFromJava"), "UTF-8"));
+			new FileOutputStream(this.getPath()+"/PreProcessedArticles/AllArticles.txt"), "UTF-8"));
 			try {
 			    out.write(text);
 			} finally {
@@ -148,21 +151,23 @@ public class HegnarTickerScraper {
 	}
 	public void writeDesiredArticlesToFile(String text) throws IOException{
 		Writer out = new BufferedWriter(new OutputStreamWriter(
-			new FileOutputStream("/Users/Lars/Documents/workspace/HegnarTickerScrape/TextFiles/DesiredArticles"), "UTF-8"));
+			new FileOutputStream(this.getPath()+"/PreProcessedArticles/AllArticles.txt"), "UTF-8"));
 			try {
 			    out.write(text);
 			} finally {
 			    out.close();
 			}
 	}
-	
+	public String getPath() {
+	    String path = String.format("%s/%s", System.getProperty("user.dir"), this.getClass().getPackage().getName().replace(".", "/"));
+	    return path.split("/")[0]+"/ArticleResources/";
+	}
 	public static NewsArticlesWithTickers getArticlesWithTicker() throws IOException{
 		JsonHandler h = new JsonHandler();
 		
 		h.getJsonSource("/PreProcessedArticles/NewsArticlesWithFeaturesCompleteWithVS.txt");
 		NewsArticlesWithTickers tickerArticles = new NewsArticlesWithTickers();
 		NewsArticlesRaw na = h.getArticles();
-		
 		
 		for(int i=0; i<na.getArticles().length; i++){
 			NewsArticleWithTickers nawt = new NewsArticleWithTickers();
@@ -197,7 +202,6 @@ public class HegnarTickerScraper {
 			} catch (Exception e) {
 				System.out.println("Skipping article " + i);
 				continue;
-			
 			}
 			//System.out.println(hts.AuthorName);
 			//System.out.println(hts.keywordsList);
@@ -214,13 +218,17 @@ public class HegnarTickerScraper {
 	}
 	
 	public static void main(String[] args) throws IOException{
-		Gson gson = new Gson();
+		/*Gson gson = new Gson();
 		HegnarTickerScraper hts = new HegnarTickerScraper("http://www.hegnar.no/bors/article754445.ece");
 		String splitString = "docs";
 		String tempJsonString = hts.getArticlesFromAPI("Hegnar","5000").split(splitString)[1];
 		String finalJsonString = "{\"articles" + tempJsonString.substring(0, tempJsonString.length()-1);
-		hts.writeToFile(finalJsonString);	
+		hts.writeToFile(finalJsonString);*/
 	
 		//hts.writeDesiredArticlesToFile(gson.toJson(getArticlesWithTicker()));
+		
+		
+		HegnarTickerScraper hts = new HegnarTickerScraper();
+		hts.writeDesiredArticlesToFile(hts.getArticlesFromAPI("Hegnar", "15000"));
 	}
 }

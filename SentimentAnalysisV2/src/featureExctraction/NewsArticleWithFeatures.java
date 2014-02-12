@@ -18,6 +18,7 @@ import machineLearning.VectorAttributes;
 
 import preProcessing.ArticleCategoryGenerator;
 import preProcessing.NewsArticleWithPosTaggedWords;
+import preProcessing.NewsArticleWithStemmedVersion;
 import preProcessing.TextFileHandler;
 import newsAPI.JsonHandler.MyFieldNamingStrategy;
 import annotationStatistics.AnnotationValidator;
@@ -26,7 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
-public class NewsArticleWithFeatures extends NewsArticleWithPosTaggedWords {
+public class NewsArticleWithFeatures extends NewsArticleWithStemmedVersion {
 
 	
 	public String[] analyticClues; 
