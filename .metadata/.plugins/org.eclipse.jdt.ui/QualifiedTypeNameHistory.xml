@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="preProcessing.HegnarTickerScraper"/>
+<fullyQualifiedTypeName name="utils.norwegianStemmer"/>
+<fullyQualifiedTypeName name="utils.Stemmer"/>
+<fullyQualifiedTypeName name="preProcessing.NewsArticleWithStemmedVersion"/>
+<fullyQualifiedTypeName name="preProcessing.NewsArticlesWithPosTaggedWords"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+</qualifiedTypeNameHistroy>

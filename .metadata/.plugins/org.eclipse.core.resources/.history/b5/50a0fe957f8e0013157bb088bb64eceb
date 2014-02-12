@@ -1,0 +1,5 @@
+package preProcessing;
+
+public class NewsArticlesWithStemmedVersion {
+
+}

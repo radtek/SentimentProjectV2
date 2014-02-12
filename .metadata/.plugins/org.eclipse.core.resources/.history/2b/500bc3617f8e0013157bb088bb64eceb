@@ -1,0 +1,17 @@
+package preProcessing;
+
+public class NewsArticleWithStemmedVersion extends NewsArticleWithPosTaggedWords{
+	public String stemmedTitle;
+	public String stemmedLeadText;
+	public String stemmedText;
+	
+	public NewsArticleWithStemmedVersion() {
+
+	}
+
+	
+	
+	
+	
+		
+}

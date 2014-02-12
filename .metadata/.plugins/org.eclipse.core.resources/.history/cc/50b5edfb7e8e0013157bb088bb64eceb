@@ -1,0 +1,10 @@
+package preProcessing;
+
+public class NewsArticleWithStemmedVersion extends NewsArticleWithPosTaggedWords{
+	
+	
+	
+	
+	
+
+}
