@@ -18,9 +18,9 @@ import java.nio.charset.StandardCharsets;
 
 
 
+
+import utils.ArticleCleaner;
 import newsAPI.JsonHandler;
-
-
 import newsAPI.NewsArticleRaw;
 
 import com.google.gson.Gson;
@@ -30,7 +30,7 @@ import com.google.gson.Gson;
 public class PosTaggedJsonCreater {
 	
 
-	public NewsArticleWithPosTaggedWords getNiceArticle(NewsArticleRaw article) throws IOException{
+	public NewsArticleWithPosTaggedWords getNiceArticle(NewsArticleWithTickers article) throws IOException{
 		NewsArticleWithPosTaggedWords napt = new NewsArticleWithPosTaggedWords();
 		napt.setcat(article.getcat());
 		napt.setId(article.getId());
@@ -149,19 +149,19 @@ public class PosTaggedJsonCreater {
 		
 	}
 	
-	public String getAllArticlesAsJson(NewsArticleRaw[] articles) throws IOException{
+	public String getAllArticlesAsJson(NewsArticlesWithTickers articles) throws IOException{
 	
 		NewsArticlesWithPosTaggedWords nawpti = new NewsArticlesWithPosTaggedWords();
-		System.out.println("Length of articles: " + articles.length);
+		System.out.println("Length of articles: " + articles.getNewsArticlesWithTickers().size());
 		
-		for(int i=0; i<articles.length; i++){
+		for(int i=0; i<articles.getNewsArticlesWithTickers().size(); i++){
 			System.out.println("Counter: " + i);
-			nawpti.getNawpti().add(this.getNiceArticle(this.cleanArticle(articles[i])));
+			nawpti.getNawpti().add(this.getNiceArticle(articles.getNewsArticlesWithTickers().get(i)));
 		}
 		Gson g = new Gson();
 		return g.toJson(nawpti, NewsArticlesWithPosTaggedWords.class);
 	}
-	
+
 
 	
 	public void writeToFile(String text) throws IOException{
@@ -173,12 +173,10 @@ public class PosTaggedJsonCreater {
 			    out.close();
 			}
 	}
-	
 
 	public static void main(String[] args) throws IOException{
 		PosTaggedJsonCreater creator = new PosTaggedJsonCreater();
-		creator.writeToFile(creator.getAllArticlesAsJson(creator.getAllArticles()));
-	
+//		creator.writeToFile(creator.getAllArticlesAsJson(creator.getAllArticles()));
 	}
 	
 	

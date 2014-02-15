@@ -1,0 +1,31 @@
+package utils;
+
+import java.io.IOException;
+
+import preProcessing.HegnarTickerScraper;
+import preProcessing.NewsArticlesWithTickers;
+import newsAPI.JsonHandler;
+
+public class ArticleTypeGenerator {
+	
+	
+	public ArticleTypeGenerator(){
+		
+	};
+	
+	public static void generateTickerArticles(String RawArticlesFileName, String newFileName) throws IOException{
+		JsonHandler rawHandler = new JsonHandler(RawArticlesFileName, "raw");
+		HegnarTickerScraper hts = new HegnarTickerScraper();
+		NewsArticlesWithTickers tickerArticles = hts.getArticlesWithTicker(rawHandler);
+		
+	}
+	
+	
+	
+	
+	public static void main(String[] args){
+		
+	}
+	
+
+}

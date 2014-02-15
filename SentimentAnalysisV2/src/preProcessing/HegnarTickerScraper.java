@@ -162,10 +162,8 @@ public class HegnarTickerScraper {
 	    String path = String.format("%s/%s", System.getProperty("user.dir"), this.getClass().getPackage().getName().replace(".", "/"));
 	    return path.split("/")[0]+"/ArticleResources/";
 	}
-	public static NewsArticlesWithTickers getArticlesWithTicker() throws IOException{
-		JsonHandler h = new JsonHandler();
-		
-		h.getJsonSource("/PreProcessedArticles/NewsArticlesWithFeaturesCompleteWithVS.txt");
+	public  NewsArticlesWithTickers getArticlesWithTicker(JsonHandler h) throws IOException{
+		//System.out.println(h.getArticles().getArticles()[0].getText());
 		NewsArticlesWithTickers tickerArticles = new NewsArticlesWithTickers();
 		NewsArticlesRaw na = h.getArticles();
 		
@@ -207,6 +205,7 @@ public class HegnarTickerScraper {
 			//System.out.println(hts.keywordsList);
 			//System.out.println(hts.TickerList);	
 		}
+		//System.out.println(tickerArticles.getNewsArticlesWithTickers().get(0).authorName);
 		return tickerArticles;
 	}
 	

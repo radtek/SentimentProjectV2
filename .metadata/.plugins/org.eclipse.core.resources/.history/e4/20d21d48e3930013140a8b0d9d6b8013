@@ -1,0 +1,19 @@
+package utils;
+
+import newsAPI.JsonHandler;
+
+public class ArticleTypeGenerator {
+	
+	
+	public ArticleTypeGenerator(){
+		
+	};
+	
+	public static void generateTickerArticles(String RawArticlesFileName){
+		JsonHandler rawHandler = new JsonHandler(RawArticlesFileName, "raw");
+		
+	}
+	
+	
+
+}
