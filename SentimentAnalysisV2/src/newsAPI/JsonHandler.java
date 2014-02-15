@@ -10,11 +10,20 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import preProcessing.NewsArticlesWithPosTaggedWords;
+import preProcessing.NewsArticlesWithTickers;
+
 
 public class JsonHandler {
 	
 	
 	public NewsArticlesRaw articles;
+	public NewsArticlesWithPosTaggedWords posTaggedArticles;
+	public NewsArticlesWithTickers tickerArticles;
+	
+
+
+
 	public String jsonSource;
 	
 
@@ -23,10 +32,19 @@ public class JsonHandler {
 		
 	}
 	
-	public JsonHandler(String articleSource) throws IOException{
+	public JsonHandler(String articleSource, String type) throws IOException{
 		this.jsonSource = getJsonSource(this.getPath()+articleSource);
-		this.articles = newsArticles(this.jsonSource);
-	
+		if(type == "raw"){
+			this.articles = newsArticles(this.jsonSource);
+		}
+		else if(type == "pos"){
+			this.posTaggedArticles = posTaggedNewsArticles(this.jsonSource);
+		}
+		else if(type == "ticker"){
+			this.tickerArticles = newsArticlesWithTickers(this.jsonSource);
+		}
+		
+		
 	}
 	
 	
@@ -70,13 +88,24 @@ public class JsonHandler {
 		NewsArticlesRaw articles = gson.fromJson(jsonSource, NewsArticlesRaw.class);
 		return articles;
 	}
-	
+	public NewsArticlesWithPosTaggedWords posTaggedNewsArticles(String jsonSource){
+		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
+		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
+		NewsArticlesWithPosTaggedWords articles = gson.fromJson(jsonSource, NewsArticlesWithPosTaggedWords.class);
+		return articles;
+	}
+	public NewsArticlesWithTickers newsArticlesWithTickers (String jsonSource){
+		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
+		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
+		NewsArticlesWithTickers articles = gson.fromJson(jsonSource, NewsArticlesWithTickers.class);
+		return articles;
+	}
 
 	
 	/* METHOD FOR DETERMINING RELATIVE PATHS */
 	public String getPath() {
 	    String path = String.format("%s/%s", System.getProperty("user.dir"), this.getClass().getPackage().getName().replace(".", "/"));
-	    return path.split("/")[0]+"/ArticleResources/";
+	    return path.split(this.getClass().getPackage().getName())[0]+"/ArticleResources/";
 	}
 	
 	/* GETTERS AND SETTERS */
@@ -93,11 +122,24 @@ public class JsonHandler {
 	public void setJsonSource(String jsonSource) {
 		this.jsonSource = jsonSource;
 	}
+	public NewsArticlesWithPosTaggedWords getPosTaggedArticles() {
+		return posTaggedArticles;
+	}
 
-	
+	public void setPosTaggedArticles(
+			NewsArticlesWithPosTaggedWords posTaggedArticles) {
+		this.posTaggedArticles = posTaggedArticles;
+	}
+	public NewsArticlesWithTickers getTickerArticles() {
+		return tickerArticles;
+	}
+
+	public void setTickerArticles(NewsArticlesWithTickers tickerArticles) {
+		this.tickerArticles = tickerArticles;
+	}
 	/* TEST METHOD */
 	public static void main(String[] args) throws IOException{
-		JsonHandler handler = new JsonHandler("/Misc/lars_annotated_1000_1426_19_13.json");
+		JsonHandler handler = new JsonHandler("/Misc/lars_annotated_1000_1426_19_13.json", "raw");
 		System.out.println(handler.getArticles().articles[0].text);
 	}
 

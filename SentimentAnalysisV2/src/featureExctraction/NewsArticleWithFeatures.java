@@ -1013,8 +1013,8 @@ public class NewsArticleWithFeatures extends NewsArticleWithStemmedVersion {
 	
 	
 	
-	public static void main(String[] args) throws IOException{
-		NewsArticleWithFeatures newsArticleWithFeatures = new NewsArticleWithFeatures();
+	public static void main(String[] args){
+		
 
         		
 	}

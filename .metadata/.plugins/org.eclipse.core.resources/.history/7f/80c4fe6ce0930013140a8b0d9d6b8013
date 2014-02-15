@@ -1,0 +1,33 @@
+package utils;
+
+import java.io.IOException;
+
+import newsAPI.JsonHandler;
+
+public class Stemmer extends norwegianStemmer {
+	
+	
+	
+	public Stemmer(){
+		
+	}
+	
+	public static String stemText(String text){
+		Stemmer stemmer = new Stemmer();
+		String newText = "";
+		String[] oldTextArray = text.split(" ");
+		for(int i=0; i<oldTextArray.length; i++){
+			stemmer.setCurrent(oldTextArray[i]);
+			stemmer.stem();
+			newText+=stemmer.getCurrent();
+		}
+		return newText;
+	}
+	
+	
+	
+	public static void main(String[] args) throws IOException{
+		JsonHandler handler = new JsonHandler("/ArticleSteps/3_POStaggedArticles/StemmingTestArticles.txt", "pos");
+		handler.getPosTaggedArticles().nawpti.get(0).text;
+	}
+}

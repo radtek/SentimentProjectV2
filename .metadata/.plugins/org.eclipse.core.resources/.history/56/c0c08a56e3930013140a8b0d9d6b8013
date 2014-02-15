@@ -1,0 +1,20 @@
+package utils;
+
+import java.io.IOException;
+
+import newsAPI.JsonHandler;
+
+public class ArticleTypeGenerator {
+	
+	
+	public ArticleTypeGenerator(){
+		
+	};
+	
+	public static void generateTickerArticles(String RawArticlesFileName, String newFileName) throws IOException{
+		JsonHandler rawHandler = new JsonHandler(RawArticlesFileName, "raw");
+	}
+	
+	
+
+}

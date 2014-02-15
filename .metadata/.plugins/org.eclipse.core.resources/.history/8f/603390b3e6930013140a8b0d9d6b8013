@@ -1,0 +1,47 @@
+package utils;
+
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
+import com.google.gson.Gson;
+
+import preProcessing.HegnarTickerScraper;
+import preProcessing.NewsArticlesWithTickers;
+import newsAPI.JsonHandler;
+
+public class ArticleTypeGenerator {
+	
+	
+	public ArticleTypeGenerator(){
+		
+	};
+	
+	public static void generateTickerArticles(String RawArticlesFileName, String newFileName) throws IOException{
+		JsonHandler rawHandler = new JsonHandler(RawArticlesFileName, "raw");
+		HegnarTickerScraper hts = new HegnarTickerScraper();
+		NewsArticlesWithTickers tickerArticles = hts.getArticlesWithTicker(rawHandler);
+		Gson gson = new Gson();
+		String tickerArticlesAsJson = gson.toJson(tickerArticles);
+		
+	}
+	
+	
+	public void writeToFile(String text, String path) throws IOException{
+		Writer out = new BufferedWriter(new OutputStreamWriter(
+			    new FileOutputStream("C:/Users/Lars/Desktop/SentimentProject/SentimentAnalysis/src/xml/test2.txt"), "UTF-8"));
+			try {
+			    out.write(text);
+			} finally {
+			    out.close();
+			}
+	}
+	
+	public static void main(String[] args){
+		
+	}
+	
+
+}

@@ -40,5 +40,8 @@ public class NewsArticleWithTickers extends NewsArticleRaw{
 	public void setAuthorName(String authorName) {
 		this.authorName = authorName;
 	}
+	
+	
+	
 
 }

@@ -28,7 +28,7 @@ public class TextFileHandler {
 	
 	public String getPath() {
 	    String path = String.format("%s/%s", System.getProperty("user.dir"), this.getClass().getPackage().getName().replace(".", "/"));
-	    return path.split("/")[0]+"/ArticleResources/";
+	    return path.split(this.getClass().getPackage().getName())[0]+"/ArticleResources/";
 	}
 	
 	
