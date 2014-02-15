@@ -2,7 +2,7 @@ package featureExctraction;
 
 import java.util.ArrayList;
 
-public class FeaturesVektor {
+public class FeaturesVektor implements Comparable {
 	
 
 	public ArrayList<Double> featureVector;
@@ -49,13 +49,14 @@ public class FeaturesVektor {
 	}
 
 
-
-
-
-	
-
-
-
-	
-	
+	@Override
+	public int compareTo(Object other) {
+		if (this.getFeatureVector().get(0) > ((FeaturesVektor) other).getFeatureVector().get(0)) {
+			return 1;
+		} else if (this.getFeatureVector().get(0) < ((FeaturesVektor) other).getFeatureVector().get(0)) {
+			return -1;
+		} else {
+			return 0;
+		}
+	}
 }
