@@ -2,6 +2,8 @@ package newsAPI;
 
 import com.google.gson.*;
 
+import featureExctraction.NewsArticlesWithFeatures;
+
 import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -10,7 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import preProcessing.NewsArticleWithStemmedVersion;
 import preProcessing.NewsArticlesWithPosTaggedWords;
+import preProcessing.NewsArticlesWithStemmedVersion;
 import preProcessing.NewsArticlesWithTickers;
 
 
@@ -20,7 +24,8 @@ public class JsonHandler {
 	public NewsArticlesRaw articles;
 	public NewsArticlesWithPosTaggedWords posTaggedArticles;
 	public NewsArticlesWithTickers tickerArticles;
-	
+	public NewsArticlesWithStemmedVersion stemmedArticles;
+	public NewsArticlesWithFeatures featureArticles;
 
 
 
@@ -42,6 +47,12 @@ public class JsonHandler {
 		}
 		else if(type == "ticker"){
 			this.tickerArticles = newsArticlesWithTickers(this.jsonSource);
+		}
+		else if(type == "stemmed"){
+			this.stemmedArticles = newsArticlesWithStemmedVersion(this.jsonSource);
+		}
+		else if(type == "features"){
+			this.featureArticles = newsArticlesWithFeatures(this.jsonSource);
 		}
 		
 		
@@ -86,21 +97,37 @@ public class JsonHandler {
 		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
 		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
 		NewsArticlesRaw articles = gson.fromJson(jsonSource, NewsArticlesRaw.class);
+		System.out.println(articles.getArticles()[0].getlead_text());
 		return articles;
 	}
-	public NewsArticlesWithPosTaggedWords posTaggedNewsArticles(String jsonSource){
-		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
-		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
-		NewsArticlesWithPosTaggedWords articles = gson.fromJson(jsonSource, NewsArticlesWithPosTaggedWords.class);
-		return articles;
-	}
+	
 	public NewsArticlesWithTickers newsArticlesWithTickers (String jsonSource){
 		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
 		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
 		NewsArticlesWithTickers articles = gson.fromJson(jsonSource, NewsArticlesWithTickers.class);
 		return articles;
 	}
+	
+	public NewsArticlesWithPosTaggedWords posTaggedNewsArticles(String jsonSource){
+		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
+		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
+		NewsArticlesWithPosTaggedWords articles = gson.fromJson(jsonSource, NewsArticlesWithPosTaggedWords.class);
+		return articles;
+	}
 
+	public NewsArticlesWithStemmedVersion newsArticlesWithStemmedVersion (String jsonSource){
+		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
+		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
+		NewsArticlesWithStemmedVersion articles = gson.fromJson(jsonSource, NewsArticlesWithStemmedVersion.class);
+		return articles;
+	}
+	
+	public NewsArticlesWithFeatures newsArticlesWithFeatures (String jsonSource){
+		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
+		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
+		NewsArticlesWithFeatures articles = gson.fromJson(jsonSource, NewsArticlesWithFeatures.class);
+		return articles;
+	}
 	
 	/* METHOD FOR DETERMINING RELATIVE PATHS */
 	public String getPath() {

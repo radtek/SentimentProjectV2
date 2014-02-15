@@ -8,6 +8,8 @@ import java.io.Writer;
 
 import com.google.gson.Gson;
 
+import featureExctraction.NewsArticleWithFeatures;
+import featureExctraction.NewsArticlesWithFeatures;
 import preProcessing.HegnarTickerScraper;
 import preProcessing.NewsArticlesWithPosTaggedWords;
 import preProcessing.NewsArticlesWithStemmedVersion;
@@ -56,6 +58,14 @@ public class ArticleTypeGenerator {
 		String stemmedArticlesAsJson = gson.toJson(stemmedArticles);
 		this.writeToArticleFile(stemmedArticlesAsJson, this.getPath()+"ArticleSteps/4_StemmedArticles", newFileName);	
 	}
+	public void generateFeatureArticles(String StememdArticleFileSource, String newFileName) throws IOException{
+		Stemmer s = new Stemmer();
+		NewsArticlesWithFeatures newsArticlesWithFeatures = new NewsArticlesWithFeatures();
+		newsArticlesWithFeatures.initiateNewsArticlesWithFeatures(StememdArticleFileSource);
+		Gson gson = new Gson();
+		String featureArticlesAsJson = gson.toJson(newsArticlesWithFeatures);
+		this.writeToArticleFile(featureArticlesAsJson, this.getPath()+"ArticleSteps/5_FeatureArticles", newFileName);	
+	}
 	
 	
 	public void writeToArticleFile(String text, String path, String name) throws IOException{
@@ -75,9 +85,10 @@ public class ArticleTypeGenerator {
 	public static void main(String[] args) throws IOException{
 		ArticleTypeGenerator atg = new ArticleTypeGenerator();
 		//atg.generateCleanRawArticles("ArticleSteps/0_UntouchedArticles/ArticleGeneratorTest.txt", "ArticleGeneratorTestClean");
-		//atg.generateTickerArticles("ArticleSteps/1_RawArticles/ArticleGeneratorTestClean.json", "ArticleGeneratorTestTicker");
+		atg.generateTickerArticles("ArticleSteps/1_RawArticles/ArticleGeneratorTestClean.json", "ArticleGeneratorTestTicker");
 		//atg.generatePOStaggedArticles("ArticleSteps/2_TickerArticles/ArticleGeneratorTestTicker.json", "ArticleGeneratorTestPOS");
-		atg.generateStemmedArticles("ArticleSteps/3_POStaggedArticles/StemmingTestArticles.txt", "ArticleGeneratorTestStemmed");
+		//atg.generateStemmedArticles("ArticleSteps/3_POStaggedArticles/ArticleGeneratorTestPOS.json", "ArticleGeneratorTestStemmed");
+		//atg.generateFeatureArticles("ArticleSteps/4_StemmedArticles/ArticleGeneratorTestStemmed.json", "ArticleGeneratorTestFeatures");
 	}
 	
 

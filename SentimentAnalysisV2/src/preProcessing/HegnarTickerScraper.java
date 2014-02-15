@@ -166,6 +166,7 @@ public class HegnarTickerScraper {
 		//System.out.println(h.getArticles().getArticles()[0].getText());
 		NewsArticlesWithTickers tickerArticles = new NewsArticlesWithTickers();
 		NewsArticlesRaw na = h.getArticles();
+	
 		
 		for(int i=0; i<na.getArticles().length; i++){
 			NewsArticleWithTickers nawt = new NewsArticleWithTickers();
@@ -173,6 +174,10 @@ public class HegnarTickerScraper {
 			nawt.setId(na.getArticles()[i].getId());
 			nawt.setImageUrl(na.getArticles()[i].getImageUrl());
 			nawt.setlast_modified(na.getArticles()[i].getlast_modified());
+			
+			System.out.println("LEAD TEXT" + na.getArticles()[i].getlead_text());
+			
+			
 			nawt.setlead_text(na.getArticles()[i].getlead_text());
 			nawt.setLinks(na.getArticles()[i].getLinks());
 			nawt.setpublished(na.getArticles()[i].getpublished());

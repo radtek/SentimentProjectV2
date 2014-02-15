@@ -17,21 +17,42 @@ public class Stemmer extends norwegianStemmer {
 	
 	public static String stemText(String text){
 		Stemmer stemmer = new Stemmer();
+		//THE FINAL STEMEMD VERSION OF THE TEXT
 		String newText = "";
+		
+		//CHECK IF TEXT IS NULL
 		if(text!=null){
+			//CREATE ARRAY OF TEXT
 			String[] oldTextArray = text.split(" ");
+//			for(int i=0; i<oldTextArray.length; i++){
+//				System.out.println(oldTextArray[i]);
+//				
+//			}
+			
 			for(int i=0; i<oldTextArray.length; i++){
-				System.out.println(oldTextArray[i]);
-				if(oldTextArray[i]!=null && oldTextArray[i]!=" "){
-					if(Character.isLetter(oldTextArray[i].charAt(oldTextArray[i].length()))){
-						stemmer.setCurrent(oldTextArray[i]);
-						stemmer.stem();
-						newText+= " " + stemmer.getCurrent();	
-					}
-					else{
-						stemmer.setCurrent(oldTextArray[i].substring(oldTextArray[i].length()-1));
-						stemmer.stem();
-						newText+= " " + stemmer.getCurrent() + oldTextArray[i].charAt(oldTextArray[i].length());
+				
+				if(oldTextArray[i]!=null && oldTextArray[i]!="" && oldTextArray[i].length()>0){
+					//System.out.println(oldTextArray[i]);
+					
+					if(oldTextArray[i].substring(oldTextArray[i].length() - 1) != null){	
+					//	System.out.println("THE CHAR:  " + (oldTextArray[i].substring(oldTextArray[i].length() - 1)));
+						
+						if(Character.isLetter(oldTextArray[i].substring(oldTextArray[i].length() - 1).charAt(0))){
+							stemmer.setCurrent(oldTextArray[i]);
+							stemmer.stem();
+							newText+= " " + stemmer.getCurrent();	
+						}
+						
+						else{
+							if(oldTextArray[i].length()>1){
+								stemmer.setCurrent(oldTextArray[i].substring(0,oldTextArray[i].length()-2));
+								stemmer.stem();
+								newText+= " " + stemmer.getCurrent() + oldTextArray[i].charAt(oldTextArray[i].length()-1);
+							}
+							else{
+								newText+=oldTextArray[i].charAt(oldTextArray[i].length()-1); 
+							}
+						}
 					}
 				}
 			}

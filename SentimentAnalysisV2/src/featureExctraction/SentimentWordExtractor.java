@@ -23,7 +23,7 @@ public class SentimentWordExtractor {
 		int numberOfPositiveAdjectives = 0;
 		int numberOfNegativeAdjectives = 0;
 		
-		JsonHandler handler = new JsonHandler("/Misc/AnnotatedSentimentWords.json");
+		JsonHandler handler = new JsonHandler("/Misc/AnnotatedSentimentWords.json", "ticker");
 		Gson g = new Gson();
 		WordCountList wcl = g.fromJson(handler.getJsonSource(), WordCountList.class);
 		
@@ -78,7 +78,7 @@ public class SentimentWordExtractor {
 	/* RETURNS NUMBER OF SENTIMENT BEARING WORDS FROM ARTICLE */
 	public int getNumberOfSentimentBearingWords(NewsArticleWithPosTaggedWords nawpti, String wordclass, String value) throws JsonSyntaxException, IOException{
 		int numberOfSentimentBearingWords = 0;
-		JsonHandler handler = new JsonHandler("/Misc/AnnotatedSentimentWords.json");
+		JsonHandler handler = new JsonHandler("/Misc/AnnotatedSentimentWords.json", "ticker");
 		Gson g = new Gson();
 		WordCountList wcl = g.fromJson(handler.getJsonSource(), WordCountList.class);
 		

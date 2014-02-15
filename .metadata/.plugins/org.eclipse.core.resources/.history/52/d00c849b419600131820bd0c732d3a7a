@@ -1,0 +1,85 @@
+package utils;
+
+import java.io.IOException;
+
+import preProcessing.NewsArticleWithStemmedVersion;
+import preProcessing.NewsArticlesWithPosTaggedWords;
+import preProcessing.NewsArticlesWithStemmedVersion;
+import newsAPI.JsonHandler;
+
+public class Stemmer extends norwegianStemmer {
+	
+	
+	
+	public Stemmer(){
+		
+	}
+	
+	public static String stemText(String text){
+		Stemmer stemmer = new Stemmer();
+		String newText = "";
+		if(text!=null){
+			String[] oldTextArray = text.split(" ");
+			for(int i=0; i<oldTextArray.length; i++){
+				System.out.println(oldTextArray[i]);
+				if(oldTextArray[i]!=null && oldTextArray[i]!=" "){
+					if(oldTextArray[i].length() >0){
+						System.out.println(oldTextArray[i].charAt(oldTextArray[i].length()));
+						if(Character.isLetter(oldTextArray[i].charAt(oldTextArray[i].length()))){
+							stemmer.setCurrent(oldTextArray[i]);
+							stemmer.stem();
+							newText+= " " + stemmer.getCurrent();	
+						}
+						else{
+							stemmer.setCurrent(oldTextArray[i].substring(oldTextArray[i].length()-1));
+							stemmer.stem();
+							newText+= " " + stemmer.getCurrent() + oldTextArray[i].charAt(oldTextArray[i].length());
+						}
+					}
+				}
+			}
+		}	
+		return newText;
+	}
+	
+	public NewsArticlesWithStemmedVersion stemAllArticles(NewsArticlesWithPosTaggedWords nawptw){
+		NewsArticlesWithStemmedVersion nawsv = new NewsArticlesWithStemmedVersion();
+		
+		for(int i=0; i<nawptw.getNawpti().size(); i++){
+			NewsArticleWithStemmedVersion newArticle = new NewsArticleWithStemmedVersion();
+			
+			newArticle.setcat(nawptw.getNawpti().get(i).getcat());
+			newArticle.setId(nawptw.getNawpti().get(i).getId());
+			newArticle.setImageUrl(nawptw.getNawpti().get(i).getImageUrl());
+			newArticle.setlast_modified(nawptw.getNawpti().get(i).getlast_modified());
+			newArticle.setlead_text(nawptw.getNawpti().get(i).getlead_text());
+			newArticle.setLinks(nawptw.getNawpti().get(i).getLinks());
+			newArticle.setpublished(nawptw.getNawpti().get(i).getpublished());
+			newArticle.setPublisher(nawptw.getNawpti().get(i).getPublisher());
+			newArticle.setSentimentValue(nawptw.getNawpti().get(i).getSentimentValue());
+			newArticle.setSignature(nawptw.getNawpti().get(i).getSignature());
+			newArticle.setTags(nawptw.getNawpti().get(i).getTags());
+			newArticle.setText(nawptw.getNawpti().get(i).getText());
+			newArticle.setTitle(nawptw.getNawpti().get(i).getTitle());
+			newArticle.setversion(nawptw.getNawpti().get(i).getversion());
+			
+			newArticle.setPosTaggedTitle(nawptw.getNawpti().get(i).getPosTaggedTitle());
+			newArticle.setPosTaggedLeadText(nawptw.getNawpti().get(i).getPosTaggedLeadText());
+			newArticle.setPosTaggedMainText(nawptw.getNawpti().get(i).getPosTaggedMainText());
+			
+			newArticle.setStemmedTitle(stemText(nawptw.getNawpti().get(i).getTitle()));
+			newArticle.setStemmedLeadText(stemText(nawptw.getNawpti().get(i).getlead_text()));
+			newArticle.setStemmedText(stemText(nawptw.getNawpti().get(i).getText()));
+			
+			nawsv.getNawsv().add(newArticle);
+		}
+		
+		
+		return nawsv;
+	}
+	
+	public static void main(String[] args) throws IOException{
+		JsonHandler handler = new JsonHandler("/ArticleSteps/3_POStaggedArticles/StemmingTestArticles.txt", "pos");
+		System.out.println(stemText(handler.getPosTaggedArticles().nawpti.get(0).text));
+	}
+}

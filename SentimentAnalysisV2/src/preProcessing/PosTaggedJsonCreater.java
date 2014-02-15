@@ -85,7 +85,13 @@ public class PosTaggedJsonCreater {
 
 	@SuppressWarnings("deprecation")
 	public String getPosTaggedList(String text) throws IOException{
+		System.out.println(text);
+		if(text == null){
+			text = "UDEFINERT TEKST";
+			
+		}
 		String urlParams = "json=y&text=" + URLEncoder.encode(text, "UTF-8");
+		
 		//String urlParameters = "json=y&text="+new String (text.getBytes ("UTF-8"), "UTF-8");
 		//String encodedParameters = URLEncoder.encode(urlParameters, "UTF-8");
 		
@@ -166,7 +172,7 @@ public class PosTaggedJsonCreater {
 	
 	public void writeToFile(String text) throws IOException{
 		Writer out = new BufferedWriter(new OutputStreamWriter(
-			    new FileOutputStream("C:/Users/Lars/Desktop/SentimentProject/SentimentAnalysis/src/xml/test2.txt"), "UTF-8"));
+			new FileOutputStream("C:/Users/Lars/Desktop/SentimentProject/SentimentAnalysis/src/xml/test2.txt"), "UTF-8"));
 			try {
 			    out.write(text);
 			} finally {
