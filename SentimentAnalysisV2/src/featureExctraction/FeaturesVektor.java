@@ -14,6 +14,11 @@ public class FeaturesVektor implements Comparable {
 		this.sentimentVector = new ArrayList<Double>();
 	}
 
+	public FeaturesVektor(ArrayList<Double> featureVector, ArrayList<Double> sentimentVector){
+		this.featureVector = featureVector;
+		this.sentimentVector = sentimentVector;
+	}
+
 
 	public ArrayList<Double> getFeatureVector() {
 		return featureVector;
@@ -48,6 +53,14 @@ public class FeaturesVektor implements Comparable {
 		this.sentimentVector = sentimentVector;
 	}
 
+	
+//	public boolean isContinious() {
+//		
+//	}
+	
+	public String toString() {
+		return featureVector.toString() + " | " + sentimentVector.toString();
+	}
 
 	@Override
 	public int compareTo(Object other) {

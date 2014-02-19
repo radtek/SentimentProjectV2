@@ -1,11 +1,15 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+
+import weka.filters.unsupervised.attribute.Discretize;
 import featureExctraction.FeaturesVektor;
 
 public class Binning {
 	
+	Discretize discretize;
 	
 	
 	// Only considers featureVector.get(0)
@@ -213,7 +217,14 @@ public class Binning {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println("Test");
+		FeaturesVektor fv1 = new FeaturesVektor(new ArrayList<Double>(Arrays.asList(0.1, 0.2, 0.3, 0.4, 0.5, 0.6)), new ArrayList<Double>(Arrays.asList(0.0)));
+		FeaturesVektor fv2 = new FeaturesVektor(new ArrayList<Double>(Arrays.asList(0.1, 0.2, 0.3, 0.4, 0.5, 0.6)), new ArrayList<Double>(Arrays.asList(0.0)));
+		FeaturesVektor fv3 = new FeaturesVektor(new ArrayList<Double>(Arrays.asList(1.1, 1.2, 1.3, 1.4, 1.5, 1.6)), new ArrayList<Double>(Arrays.asList(1.0)));
+		FeaturesVektor fv4 = new FeaturesVektor(new ArrayList<Double>(Arrays.asList(1.1, 1.2, 1.3, 1.4, 1.5, 1.6)), new ArrayList<Double>(Arrays.asList(1.0)));
+		FeaturesVektor fv5 = new FeaturesVektor(new ArrayList<Double>(Arrays.asList(1.1, 1.2, 1.3, 1.4, 1.5, 1.6)), new ArrayList<Double>(Arrays.asList(1.0)));
+		ArrayList<FeaturesVektor> fvList = new ArrayList<FeaturesVektor>(Arrays.asList(fv1, fv2, fv3, fv4, fv5));
+		System.out.println(fvList);
+		
 	}
 	
 }
