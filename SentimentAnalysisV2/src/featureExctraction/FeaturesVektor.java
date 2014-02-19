@@ -2,7 +2,7 @@ package featureExctraction;
 
 import java.util.ArrayList;
 
-public class FeaturesVektor {
+public class FeaturesVektor implements Comparable {
 	
 
 	public ArrayList<Double> featureVector;
@@ -12,6 +12,11 @@ public class FeaturesVektor {
 	public FeaturesVektor(){
 		this.featureVector = new ArrayList<Double>();
 		this.sentimentVector = new ArrayList<Double>();
+	}
+
+	public FeaturesVektor(ArrayList<Double> featureVector, ArrayList<Double> sentimentVector){
+		this.featureVector = featureVector;
+		this.sentimentVector = sentimentVector;
 	}
 
 
@@ -47,15 +52,23 @@ public class FeaturesVektor {
 	public void setSentimentVector(ArrayList<Double> sentimentVector) {
 		this.sentimentVector = sentimentVector;
 	}
-
-
-
-
-
 	
-
-
-
+//	public boolean isContinious() {
+//		
+//	}
 	
-	
+	public String toString() {
+		return featureVector.toString() + " | " + sentimentVector.toString();
+	}
+
+	@Override
+	public int compareTo(Object other) {
+		if (this.getFeatureVector().get(0) > ((FeaturesVektor) other).getFeatureVector().get(0)) {
+			return 1;
+		} else if (this.getFeatureVector().get(0) < ((FeaturesVektor) other).getFeatureVector().get(0)) {
+			return -1;
+		} else {
+			return 0;
+		}
+	}
 }
