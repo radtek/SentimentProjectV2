@@ -52,7 +52,6 @@ public class FeaturesVektor implements Comparable {
 	public void setSentimentVector(ArrayList<Double> sentimentVector) {
 		this.sentimentVector = sentimentVector;
 	}
-
 	
 //	public boolean isContinious() {
 //		
