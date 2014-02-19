@@ -35,6 +35,7 @@ public class ArticleTypeGenerator {
 	}
 	public void generateTickerArticles(String RawArticlesFileSource, String newFileName) throws IOException{
 		JsonHandler rawHandler = new JsonHandler(RawArticlesFileSource, "raw");
+		System.out.println("Handler before ticker: " + rawHandler.getArticles().getArticles()[0].lead_text);
 		HegnarTickerScraper hts = new HegnarTickerScraper();
 		NewsArticlesWithTickers tickerArticles = hts.getArticlesWithTicker(rawHandler);
 		System.out.println(tickerArticles.getNewsArticlesWithTickers().get(0).getText());
@@ -85,10 +86,10 @@ public class ArticleTypeGenerator {
 	public static void main(String[] args) throws IOException{
 		ArticleTypeGenerator atg = new ArticleTypeGenerator();
 		//atg.generateCleanRawArticles("ArticleSteps/0_UntouchedArticles/ArticleGeneratorTest.txt", "ArticleGeneratorTestClean");
-		atg.generateTickerArticles("ArticleSteps/1_RawArticles/ArticleGeneratorTestClean.json", "ArticleGeneratorTestTicker");
+		//atg.generateTickerArticles("ArticleSteps/1_RawArticles/ArticleGeneratorTestClean.json", "ArticleGeneratorTestTicker");
 		//atg.generatePOStaggedArticles("ArticleSteps/2_TickerArticles/ArticleGeneratorTestTicker.json", "ArticleGeneratorTestPOS");
 		//atg.generateStemmedArticles("ArticleSteps/3_POStaggedArticles/ArticleGeneratorTestPOS.json", "ArticleGeneratorTestStemmed");
-		//atg.generateFeatureArticles("ArticleSteps/4_StemmedArticles/ArticleGeneratorTestStemmed.json", "ArticleGeneratorTestFeatures");
+		atg.generateFeatureArticles("ArticleSteps/4_StemmedArticles/ArticleGeneratorTestStemmed.json", "ArticleGeneratorTestFeatures");
 	}
 	
 
