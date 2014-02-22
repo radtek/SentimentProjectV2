@@ -1,0 +1,29 @@
+package utils;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+public class ExcelStockParser {
+	public ExcelStockParser(){
+		
+	}
+	
+	public String getPath() {
+	    String path = String.format("%s/%s", System.getProperty("user.dir"), this.getClass().getPackage().getName().replace(".", "/"));
+	    return path.split(this.getClass().getPackage().getName())[0]+"/ArticleResources/";
+	}
+	
+	public static void main(String[] args) throws IOException{
+		ExcelStockParser esp = new ExcelStockParser();
+		InputStream myxls = new FileInputStream(esp.getPath()+"/StockExcelSheets/data.xls");
+		HSSFWorkbook wb = new HSSFWorkbook(myxls);
+		System.out.println(wb.getFirstVisibleTab());
+	}
+	
+	
+
+}

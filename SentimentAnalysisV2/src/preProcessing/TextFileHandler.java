@@ -72,6 +72,8 @@ public class TextFileHandler {
 		return negativeTitleCluesList;
 	}
 	
+	
+	
 	public static void main(String args[]) throws IOException {
 		TextFileHandler tfh = new TextFileHandler();
 		//PRINT ANALYTICAL CLUES

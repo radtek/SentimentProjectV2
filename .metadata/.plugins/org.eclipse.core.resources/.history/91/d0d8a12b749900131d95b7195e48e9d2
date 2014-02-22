@@ -1,0 +1,22 @@
+package utils;
+
+import preProcessing.NewsArticlesWithTickers;
+
+public class ArticleSorter {
+	
+	public ArticleSorter(){
+			
+	}
+	
+	public NewsArticlesWithTickers getArticlesWithTicker(String ticker, NewsArticlesWithTickers inputArticles){
+		NewsArticlesWithTickers newsArticlesWithGivenTicker = new NewsArticlesWithTickers();
+		
+		
+		
+		
+	}
+	
+	
+	
+
+}
