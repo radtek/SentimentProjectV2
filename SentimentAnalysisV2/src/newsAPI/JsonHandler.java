@@ -56,6 +56,11 @@ public class JsonHandler {
 		}
 	}
 	
+
+
+
+	
+	
 	/*FIELD NAMING STRATEGY FOR GSON*/
 	public class MyFieldNamingStrategy implements FieldNamingStrategy {
 	    public String translateName(Field arg0) {
@@ -70,6 +75,7 @@ public class JsonHandler {
 	        	}
 	            result += ch;
 	        }
+	        System.out.println(result);
 	        return result;
 	    }
 	}
@@ -89,37 +95,34 @@ public class JsonHandler {
 
 	/* CREATES NewsArticlesRaw object from JSON source */
 	public NewsArticlesRaw newsArticles(String jsonSource){
-		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
-		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
+		//MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
+		Gson gson = new Gson();
 		NewsArticlesRaw articles = gson.fromJson(jsonSource, NewsArticlesRaw.class);
-		System.out.println(articles.getArticles()[0].getlead_text());
+	//	System.out.println("Handler raw articles elad text: " + articles.getArticles()[0].getTitle());
+	//	System.out.println("Handler raw articles elad text: " + articles.getArticles()[0].getlead_text());
 		return articles;
 	}
 	
 	public NewsArticlesWithTickers newsArticlesWithTickers (String jsonSource){
-		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
-		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
+		Gson gson = new Gson();
 		NewsArticlesWithTickers articles = gson.fromJson(jsonSource, NewsArticlesWithTickers.class);
 		return articles;
 	}
 	
 	public NewsArticlesWithPosTaggedWords posTaggedNewsArticles(String jsonSource){
-		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
-		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
+		Gson gson = new Gson();
 		NewsArticlesWithPosTaggedWords articles = gson.fromJson(jsonSource, NewsArticlesWithPosTaggedWords.class);
 		return articles;
 	}
 
 	public NewsArticlesWithStemmedVersion newsArticlesWithStemmedVersion (String jsonSource){
-		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
-		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
+		Gson gson = new Gson();
 		NewsArticlesWithStemmedVersion articles = gson.fromJson(jsonSource, NewsArticlesWithStemmedVersion.class);
 		return articles;
 	}
 	
 	public NewsArticlesWithFeatures newsArticlesWithFeatures (String jsonSource){
-		MyFieldNamingStrategy strategy = new MyFieldNamingStrategy();
-		Gson gson = new GsonBuilder().setFieldNamingStrategy(strategy).create();
+		Gson gson = new Gson();
 		NewsArticlesWithFeatures articles = gson.fromJson(jsonSource, NewsArticlesWithFeatures.class);
 		return articles;
 	}
@@ -161,7 +164,6 @@ public class JsonHandler {
 	}
 	/* TEST METHOD */
 	public static void main(String[] args) throws IOException{
-		JsonHandler handler = new JsonHandler("/Misc/lars_annotated_1000_1426_19_13.json", "raw");
-		System.out.println(handler.getArticles().articles[0].text);
+		JsonHandler h = new JsonHandler("ArticleSteps/4_StemmedArticles/ArticleGeneratorTestStemmed.json", "stemmed");	
 	}
 }
