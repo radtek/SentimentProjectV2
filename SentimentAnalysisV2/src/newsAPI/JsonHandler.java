@@ -58,6 +58,7 @@ public class JsonHandler {
 	
 
 
+
 	
 	
 	/*FIELD NAMING STRATEGY FOR GSON*/
@@ -165,5 +166,4 @@ public class JsonHandler {
 	public static void main(String[] args) throws IOException{
 		JsonHandler h = new JsonHandler("ArticleSteps/4_StemmedArticles/ArticleGeneratorTestStemmed.json", "stemmed");	
 	}
-
 }

@@ -15,6 +15,13 @@ public class Stemmer extends norwegianStemmer {
 		
 	}
 	
+	public static String stemSimple(String str) {
+		Stemmer stemmer = new Stemmer();
+		stemmer.setCurrent(str);
+		stemmer.stem();
+		return stemmer.getCurrent();	
+	}
+	
 	public static String stemText(String text){
 		Stemmer stemmer = new Stemmer();
 		//THE FINAL STEMEMD VERSION OF THE TEXT
