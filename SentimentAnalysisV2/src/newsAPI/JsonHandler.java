@@ -54,12 +54,7 @@ public class JsonHandler {
 		else if(type == "features"){
 			this.featureArticles = newsArticlesWithFeatures(this.jsonSource);
 		}
-		
-		
 	}
-	
-	
-	
 	
 	/*FIELD NAMING STRATEGY FOR GSON*/
 	public class MyFieldNamingStrategy implements FieldNamingStrategy {
@@ -169,5 +164,4 @@ public class JsonHandler {
 		JsonHandler handler = new JsonHandler("/Misc/lars_annotated_1000_1426_19_13.json", "raw");
 		System.out.println(handler.getArticles().articles[0].text);
 	}
-
 }

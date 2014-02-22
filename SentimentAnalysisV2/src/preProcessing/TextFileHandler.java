@@ -72,6 +72,11 @@ public class TextFileHandler {
 		return negativeTitleCluesList;
 	}
 	
+	public static String getCotsAnnotatedString() throws IOException {
+		TextFileHandler tfh = new TextFileHandler();
+		return tfh.getTextFileAsString(tfh.getPath()+"/WordListsOfImportance/cotsannotated.json", StandardCharsets.UTF_8);
+	}
+	
 	public static void main(String args[]) throws IOException {
 		TextFileHandler tfh = new TextFileHandler();
 		//PRINT ANALYTICAL CLUES
