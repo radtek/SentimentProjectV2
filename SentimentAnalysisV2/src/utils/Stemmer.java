@@ -87,6 +87,9 @@ public class Stemmer extends norwegianStemmer {
 			newArticle.setText(nawptw.getNawpti().get(i).getText());
 			newArticle.setTitle(nawptw.getNawpti().get(i).getTitle());
 			newArticle.setversion(nawptw.getNawpti().get(i).getversion());
+			newArticle.setTickerList(nawptw.getNawpti().get(i).getTickerList());
+			newArticle.setKeywordList(nawptw.getNawpti().get(i).getKeywordList());
+			newArticle.setAuthorName(nawptw.getNawpti().get(i).getAuthorName());
 			
 			newArticle.setPosTaggedTitle(nawptw.getNawpti().get(i).getPosTaggedTitle());
 			newArticle.setPosTaggedLeadText(nawptw.getNawpti().get(i).getPosTaggedLeadText());

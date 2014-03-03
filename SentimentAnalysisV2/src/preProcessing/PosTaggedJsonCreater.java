@@ -46,6 +46,9 @@ public class PosTaggedJsonCreater {
 		napt.setText(article.getText());
 		napt.setTitle(article.getTitle());
 		napt.setversion(article.getversion());
+		napt.setAuthorName(article.getAuthorName());
+		napt.setKeywordList(article.getKeywordList());
+		napt.setTickerList(article.getTickerList());
 		
 		napt.setPosTaggedTitle(getPostTaggedWords(getPosTaggedList(article.title)));
 		napt.setPosTaggedLeadText(getPostTaggedWords(getPosTaggedList(article.lead_text)));
