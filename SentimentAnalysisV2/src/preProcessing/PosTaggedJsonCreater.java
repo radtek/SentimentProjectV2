@@ -88,7 +88,7 @@ public class PosTaggedJsonCreater {
 
 	@SuppressWarnings("deprecation")
 	public String getPosTaggedList(String text) throws IOException{
-		System.out.println(text);
+		//System.out.println(text);
 		if(text == null){
 			text = "UDEFINERT TEKST";
 			
@@ -161,7 +161,7 @@ public class PosTaggedJsonCreater {
 	public String getAllArticlesAsJson(NewsArticlesWithTickers articles) throws IOException{
 	
 		NewsArticlesWithPosTaggedWords nawpti = new NewsArticlesWithPosTaggedWords();
-		System.out.println("Length of articles: " + articles.getNewsArticlesWithTickers().size());
+		//System.out.println("Length of articles: " + articles.getNewsArticlesWithTickers().size());
 		
 		for(int i=0; i<articles.getNewsArticlesWithTickers().size(); i++){
 			System.out.println("Counter: " + i);

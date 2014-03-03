@@ -1,0 +1,34 @@
+package preProcessing;
+
+import java.util.HashMap;
+
+public class NewsArticlesWithCots {
+	
+		public HashMap<String, Integer> cots;
+	
+	
+		public NewsArticlesWithCots() {
+
+		}
+		
+		
+		
+		public HashMap<String, Integer> getCots() {
+			return cots;
+		}
+
+
+		public void setCots(HashMap<String, Integer> cots) {
+			this.cots = cots;
+		}
+
+
+		
+
+	
+		
+		
+	
+
+
+}

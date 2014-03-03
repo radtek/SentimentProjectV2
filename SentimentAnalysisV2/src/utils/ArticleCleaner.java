@@ -7,6 +7,10 @@ import java.io.IOException;
 
 
 
+
+
+import preProcessing.NewsArticleWithTickers;
+import preProcessing.NewsArticlesWithTickers;
 import newsAPI.JsonHandler;
 import newsAPI.NewsArticleRaw;
 import newsAPI.NewsArticlesRaw;
@@ -106,6 +110,21 @@ public class ArticleCleaner {
 		return cleanedArticle;
 
 	}
+	/* CLEANS AN ARTICLE */
+	public NewsArticleWithTickers cleanTickerObject(NewsArticleWithTickers article){
+		NewsArticleWithTickers cleanedArticle = article;
+
+		cleanedArticle.title = removeBadChars(article.title);
+		cleanedArticle.lead_text = removeBadChars(article.lead_text);
+		cleanedArticle.text = removeBadChars(article.text);
+		
+		cleanedArticle.text = removeTitleFromMainText(cleanedArticle);
+		cleanedArticle.text = removeLeadTextFromMainText(cleanedArticle);
+		
+		return cleanedArticle;
+
+	}
+	
 	public NewsArticlesRaw cleanAllArticles(NewsArticlesRaw articles){
 		NewsArticlesRaw cleanArticles = new NewsArticlesRaw();
 		NewsArticleRaw[] tempCleanList = new NewsArticleRaw[articles.getArticles().length];
@@ -114,6 +133,20 @@ public class ArticleCleaner {
 			tempCleanList[i]= this.cleanJsonObject(articles.getArticles()[i]);	
 		}
 		cleanArticles.setArticles(tempCleanList);
+		return cleanArticles;
+	}
+	
+
+	
+	public NewsArticlesWithTickers cleanAllTickersArticles(NewsArticlesWithTickers articles){
+		NewsArticlesWithTickers cleanArticles = new NewsArticlesWithTickers();
+		NewsArticlesWithTickers tempCleanList = new NewsArticlesWithTickers();
+		
+		for(int i=0; i<articles.getNewsArticlesWithTickers().size(); i++){
+			tempCleanList.getNewsArticlesWithTickers().add(this.cleanTickerObject(articles.getNewsArticlesWithTickers().get(i)));	
+		}
+		
+		cleanArticles.setNewsArticlesWithTickers(tempCleanList.getNewsArticlesWithTickers());
 		return cleanArticles;
 	}
 	

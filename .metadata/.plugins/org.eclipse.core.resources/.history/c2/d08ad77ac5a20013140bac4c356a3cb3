@@ -1,0 +1,15 @@
+package preProcessing;
+
+import java.util.ArrayList;
+
+public class NewsArticlesWithCots {
+	
+		public ArrayList<NewsArticleWithCots> nawc;
+	
+	
+		public NewsArticlesWithCots() {
+				
+		}
+		
+		
+}

@@ -1,0 +1,7 @@
+package preProcessing;
+
+public class NewsArticleWithCots extends NewsArticleWithStemmedVersion{
+	
+	
+
+}
