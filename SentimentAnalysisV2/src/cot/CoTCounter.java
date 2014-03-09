@@ -399,16 +399,13 @@ public class CoTCounter {
 		    dfCots.put(key, cctfdf);
 		}
 	
-	
-		
-		
+
 		System.out.println("HENTER dfCot " + dfCots.get("i i").getTermFrequency());
 		
 		for (NewsArticleWithStemmedVersion nawsv : jh.stemmedArticles.getNawsv()) {
 			
 			ArrayList<PosTaggedWord> ptwList = new ArrayList<PosTaggedWord>();
 		
-			
 			ArrayList<String> currentArticleCots = new ArrayList<String>();
 			
 			if(nawsv.getPosTaggedTitle().getPosTaggedWords()!= null){
