@@ -77,7 +77,14 @@ public class TextFileHandler {
 		TextFileHandler tfh = new TextFileHandler();
 		return tfh.getTextFileAsString(tfh.getPath()+"/WordListsOfImportance/cotsannotated.json", StandardCharsets.UTF_8);
 	}
-
+	public static String getWclList() throws IOException {
+		TextFileHandler tfh = new TextFileHandler();
+		return tfh.getTextFileAsString(tfh.getPath()+"/WordListsOfImportance/WCLCOTS.json", StandardCharsets.UTF_8);
+	}
+	public static String getCots() throws IOException {
+		TextFileHandler tfh = new TextFileHandler();
+		return tfh.getTextFileAsString(tfh.getPath()+"/CoTs/cotsRadiusTenNoMainText.json", StandardCharsets.UTF_8);
+	}
 	
 	public static void main(String args[]) throws IOException {
 		TextFileHandler tfh = new TextFileHandler();

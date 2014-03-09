@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import preProcessing.NewsArticlesWithPosTaggedWords;
+import utils.ArticleSorter;
 import newsAPI.JsonHandler;
 
 import com.google.gson.Gson;
@@ -16,18 +17,28 @@ import com.google.gson.Gson;
 public class WordCountList {
 
 	public ArrayList<WordCount> words = new ArrayList<WordCount>();
+	public int totalTitleCount;
+	public int totalLeadTextCount;
 	
 	
+
 	public WordCountList(){
-		
+		this.totalTitleCount = 0;
+		this.totalLeadTextCount = 0;
 	}
 	
-	public void addWord(String word){
+	public void addWordTF(String word, String position){
 		boolean alreadyExists = false;
 		for(int i=0; i<words.size(); i++){
 			if(words.get(i).getWord().equals(word)){
-				words.get(i).counter += 1;
+				words.get(i).termFrequency += 1;
 				alreadyExists = true;
+				if(position == "title"){
+					words.get(i).titleCounter+=1;
+				}
+				else{
+					words.get(i).leadCounter+=1;
+				}
 			}
 		}
 		if(!alreadyExists){
@@ -35,17 +46,27 @@ public class WordCountList {
 			words.add(newWord);
 		}
 	}
+	public void addWordDF(String word, String position){
+		for(int i=0; i<words.size(); i++){
+			if(words.get(i).getWord().equals(word)){
+				words.get(i).documentFrequency += 1;
+			}
+		}
+	}
 
-	public void writeToFileAsJson() throws IOException{
-			Gson gson = new Gson();
-			String json = gson.toJson(this);
-			Writer out = new BufferedWriter(new OutputStreamWriter(
-			    new FileOutputStream("C:/Users/Lars/Desktop/SentimentProject/SentimentAnalysis/src/xml/mostFrequentAdverbs.txt"), "UTF-8"));
+
+	public void writeToArticleFile(String text, String path, String name) throws IOException{
+		Writer out = new BufferedWriter(new OutputStreamWriter(
+			    new FileOutputStream(path + "/"+name+".json"), "UTF-8"));
 			try {
-			    out.write(json);
+			    out.write(text);
 			} finally {
 			    out.close();
 			}
+	}
+	public String getPath() {
+	    String path = String.format("%s/%s", System.getProperty("user.dir"), this.getClass().getPackage().getName().replace(".", "/"));
+	    return path.split(this.getClass().getPackage().getName())[0]+"/ArticleResources/";
 	}
 
 	public ArrayList<WordCount> getWords() {
@@ -61,39 +82,73 @@ public class WordCountList {
 		
 	}
 	
+	public int getTotalTitleCount() {
+		return totalTitleCount;
+	}
+
+	public void setTotalTitleCount(int totalTitleCount) {
+		this.totalTitleCount = totalTitleCount;
+	}
+
+	public int getTotalLeadTextCount() {
+		return totalLeadTextCount;
+	}
+
+	public void setTotalLeadTextCount(int totalLeadTextCount) {
+		this.totalLeadTextCount = totalLeadTextCount;
+	}
 	
 	public static void main(String args[]) throws IOException{
-		JsonHandler handler = new JsonHandler();
+		JsonHandler handler = new JsonHandler("ArticleSteps/3_POStaggedArticles/MainDataSetPOS.json", "pos");
 		Gson g = new Gson();
+		WordCountList wcl = new WordCountList();	
 		
+		NewsArticlesWithPosTaggedWords articleSource = handler.getPosTaggedArticles(); 
+		System.out.println(articleSource.getNawpti().size());
 		
-		NewsArticlesWithPosTaggedWords articleSource = g.fromJson(handler.getJsonSource(), NewsArticlesWithPosTaggedWords.class); 
-		WordCountList wcl = new WordCountList();
-		
-		for(int i=0; i<articleSource.getNawpti().size(); i++){
-			System.out.println("Counter: " + i);
-			if(articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords() != null)
-				for(int a=0; a<articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords().length; a++){
-					if(articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords()[a].getWordclass().equals("adv")){
-						wcl.addWord(articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords()[a].getInput());
-					}
-				
+		for(int i=0; i< articleSource.getNawpti().size(); i++){
+			
+			ArrayList<String> wordsInTitle = new ArrayList<String>();
+			ArrayList<String> wordsInLead = new ArrayList<String>();
+			
+			if(articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords()!=null){
+			
+				wcl.totalTitleCount+=1;
+				for(int j=0; j<articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords().length; j++){
+					
+					
+					
+					
+					
+					
+					wordsInTitle.add(articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords()[j].getInput());
+					wcl.addWordTF(articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords()[j].getInput(), "title");
+					
+					if(wordsInTitle.contains(articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords()[j].getInput())){
+						wcl.addWordDF(articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords()[j].getInput(), "title");
+					}	
 				}
-			if(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords() != null)
-				for(int b=0; b<articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords().length; b++){
-					if(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[b].getWordclass().equals("adv")){
-						wcl.addWord(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[b].getInput());
+			}
+			if(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()!=null){
+				wcl.totalLeadTextCount+=1;
+				for(int k=0; k<articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords().length; k++){
+					
+					wordsInLead.add(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput());
+					
+					if(wordsInTitle.contains(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput())|| wordsInLead.contains(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput())){
+						wcl.addWordTF(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput(), "lead");
+					}
+					else{
+						wcl.addWordTF(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput(), "lead");
+						wcl.addWordDF(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput(), "lead");
 					}
 				}
-			if(articleSource.getNawpti().get(i).getPosTaggedMainText().getPosTaggedWords() != null)
-				for(int c=0; c<articleSource.getNawpti().get(i).getPosTaggedMainText().getPosTaggedWords().length; c++){
-					if(articleSource.getNawpti().get(i).getPosTaggedMainText().getPosTaggedWords()[c].getWordclass().equals("adv")){
-						wcl.addWord(articleSource.getNawpti().get(i).getPosTaggedMainText().getPosTaggedWords()[c].getInput());
-					}
-				}
+			}
 		}
+
 		wcl.sortWords();
-		wcl.writeToFileAsJson();
+		String wclNew = g.toJson(wcl);
+		wcl.writeToArticleFile(wclNew, wcl.getPath()+"WordlistsOfImportance/", "WCLCOTS");
 	
 	}
 

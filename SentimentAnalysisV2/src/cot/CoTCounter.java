@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
+import featureExctraction.WordCountList;
 import preProcessing.NewsArticleWithCots;
 import preProcessing.NewsArticleWithStemmedVersion;
 import preProcessing.NewsArticlesWithStemmedVersion;
@@ -29,6 +31,8 @@ public class CoTCounter {
 	 */
 	
 	public HashMap<String, Integer> map;
+	public HashMap<String, CotCountTFDF> tfdfmap;
+	boolean tfdf = false;
 	public int radius;
 	public String filename;
 	
@@ -39,7 +43,12 @@ public class CoTCounter {
 	}
 	public CoTCounter(int radius) {
 		this.map = new HashMap<String, Integer>();
-
+		this.radius = radius;
+	}
+	public CoTCounter(String filename, int radius, boolean tfdf) {
+		this.tfdf = tfdf;
+		this.filename = filename;
+		this.tfdfmap = new HashMap<String, CotCountTFDF>();
 		this.radius = radius;
 	}
 	
@@ -142,6 +151,32 @@ public class CoTCounter {
 		}
 	}
 	
+	public void cotCountArticlesNotMainTextTFDF(JsonHandler jh) {
+		tfdfmap = new HashMap<String, CotCountTFDF>();
+		for (NewsArticleWithStemmedVersion nawsv : jh.stemmedArticles.getNawsv()) {
+//			for (int i = 0; i < nawsv.getAllPosTaggedWords().size();i++) {
+//				System.out.print(nawsv.getAllPosTaggedWords().get(i).stem + " ");
+//			}
+			ArrayList<PosTaggedWord> ptwList = new ArrayList<PosTaggedWord>();
+			
+			if(nawsv.getPosTaggedLeadText().getPosTaggedWords()!= null){
+				for (PosTaggedWord posTaggedWord : nawsv.getPosTaggedTitle().getPosTaggedWords()) {
+					ptwList.add(posTaggedWord);
+				}
+			}	
+			if(nawsv.getPosTaggedLeadText().getPosTaggedWords()!= null){
+				for (PosTaggedWord posTaggedWord : nawsv.getPosTaggedLeadText().getPosTaggedWords()) {
+					ptwList.add(posTaggedWord);
+				}
+			}
+			
+			for (int i = 0; i < ptwList.size();i++) {
+				ArrayList<String> cots = getCoTsFromIndex(ptwList, i);
+				addCoTsToMapTFDF(tfdfmap, cots);
+			}
+		}
+	}
+	
 	public HashMap<String, Integer> getCotsForArticle(NewsArticleWithStemmedVersion stemmedArticle){
 		HashMap<String, Integer> articleHashmap = new HashMap<String, Integer>();
 
@@ -203,6 +238,15 @@ public class CoTCounter {
 			}
 		return hashmap;
 	}
+	
+	public static HashMap<String, CotCountTFDF> cotCountArticlesTFDF(NewsArticleWithStemmedVersion nawsv, int radius) {
+		HashMap<String, CotCountTFDF> hashmap = new HashMap<String, CotCountTFDF>();
+			for (int i = 0; i < nawsv.getAllPosTaggedWords().size();i++) {
+				ArrayList<String> cots = getCoTsFromIndex(nawsv.getAllPosTaggedWords(), i, radius);
+				hashmap = addCoTsToMapTFDF(hashmap, cots);
+			}
+		return hashmap;
+	}
 
 	public static HashMap<String, Integer> addCoTsToMap(HashMap<String, Integer> hashmap, ArrayList<String> cots) {
 		for (String cot : cots) {
@@ -211,6 +255,22 @@ public class CoTCounter {
 				hashmap.put(cot, ++count);
 			} else {
 				hashmap.put(cot, 1);
+			}
+		}
+		return hashmap;
+	}
+
+	public static HashMap<String, CotCountTFDF> addCoTsToMapTFDF(HashMap<String, CotCountTFDF> hashmap, ArrayList<String> cots) {
+		for (String cot : cots) {
+			if ( hashmap.containsKey(cot)) {
+				CotCountTFDF cctfdf = new CotCountTFDF();
+				cctfdf = hashmap.get(cot);
+				cctfdf.setTermFrequency(cctfdf.getTermFrequency()+1);
+				hashmap.put(cot, cctfdf);
+			} else {
+				CotCountTFDF cctfdf = new CotCountTFDF();
+				cctfdf.setDocumentFrequency(cctfdf.getDocumentFrequency()+1);
+				hashmap.put(cot, new CotCountTFDF());
 			}
 		}
 		return hashmap;
@@ -334,30 +394,97 @@ public class CoTCounter {
 		   return sortedMap;
 	}
 	
+	public void generateChiSquaredCots(int index) throws JsonSyntaxException, IOException{
+		double ccFreq = 0;
+		int freqTermV = 0;
+		int freqTermU = 0;
+		int N = 0;
+		
+		
+		Gson gson = new Gson();
+		TextFileHandler tfh = new TextFileHandler();
+		
+		WordCountList cotsWords = gson.fromJson(tfh.getWclList(), WordCountList.class);
+		HashMap<String, Double> cots = gson.fromJson(tfh.getCots(), HashMap.class);
+		
+		System.out.println("Cotswords" + cotsWords.getWords().size() + " Hashmap size: " + cots.size());
+		
+		System.out.println(cots.get("aksje i"));
+		
+		ccFreq = cots.get("aksje i");
+		
+		
+		for(int i=0; i<cotsWords.getWords().size(); i++){
+			if(cotsWords.getWords().get(i).getWord() == "aksje"){
+				freqTermV = cotsWords.getWords().get(i).getCounter();
+			}
+			else if(cotsWords.getWords().get(i).getWord() == "i"){
+				freqTermU = cotsWords.getWords().get(i).getCounter();
+			}
+		}
+		N = cotsWords.getTotalTitleCount()+cotsWords.getTotalLeadTextCount();
+		System.out.println("CCFREQ: " +  ccFreq + "FREQTERMV " + freqTermV + "FREQTERMU " +  freqTermU + " N"  + N);
+
+	}
+	
+	
+	
+	
+	
 	public static void main(String[] args) throws Exception {
+//		CoTCounter cc = new CoTCounter(10);
+//		cc.generateChiSquaredCots(10);
+		
+		
+//		JsonHandler jh = new JsonHandler("/ArticleSteps/4_StemmedArticles/MainDataSetStemmed.json", "stemmed");
+//
+//		CoTCounter cc = new CoTCounter("cotsTFDF.json", 10);
+//		cc.cotCountArticlesNotMainText(jh);
+//		
+//		HashMap<String, Integer> sortedHashmap = new HashMap<String, Integer>();
+//		Iterator it = cc.map.entrySet().iterator();
+//		
+//		
+//		while (it.hasNext()) {
+//				
+//		        Map.Entry pairs = (Map.Entry)it.next();
+//		        System.out.println(pairs.getKey() + " = " + pairs.getValue());
+//		        if(Integer.parseInt(pairs.getValue().toString()) > 0){
+//		        	System.out.println("DSANT");
+//		        	sortedHashmap.put(pairs.getKey().toString(), Integer.parseInt(pairs.getValue().toString()));	
+//		        }
+//		        it.remove(); // avoids a ConcurrentModificationException
+//		}
+//			
+//		
+//		cc.writeSortedMapToFile(cc.sortHashMapByValuesD(sortedHashmap));
+//		cc.writeMapToFile();
+		
+		
+		
 		JsonHandler jh = new JsonHandler("/ArticleSteps/4_StemmedArticles/MainDataSetStemmed.json", "stemmed");
 
-		CoTCounter cc = new CoTCounter("cotsRadiusTenNoMainText.json", 10);
-		cc.cotCountArticlesNotMainText(jh);
+		CoTCounter cc = new CoTCounter("cotsTFDF.json", 10, true);
+		cc.cotCountArticlesNotMainTextTFDF(jh);
 		
-		HashMap<String, Integer> sortedHashmap = new HashMap<String, Integer>();
-		Iterator it = cc.map.entrySet().iterator();
-		
-		
-		while (it.hasNext()) {
-				
-		        Map.Entry pairs = (Map.Entry)it.next();
-		        System.out.println(pairs.getKey() + " = " + pairs.getValue());
-		        if(Integer.parseInt(pairs.getValue().toString()) > 0){
-		        	System.out.println("DSANT");
-		        	sortedHashmap.put(pairs.getKey().toString(), Integer.parseInt(pairs.getValue().toString()));	
-		        }
-		        it.remove(); // avoids a ConcurrentModificationException
-		}
+//		HashMap<String, CotCountTFDF> sortedHashmap = new HashMap<String, CotCountTFDF>();
+//		Iterator it = cc.map.entrySet().iterator();
+//		
+//		
+//		while (it.hasNext()) {
+//				
+//		        Map.Entry pairs = (Map.Entry)it.next();
+//		        System.out.println(pairs.getKey() + " = " + pairs.getValue());
+//		        if(Integer.parseInt(pairs.getValue().toString()) > 0){
+//		        	System.out.println("DSANT");
+//		        	sortedHashmap.put(pairs.getKey().toString(), Integer.parseInt(pairs.getValue().toString()));	
+//		        }
+//		        it.remove(); // avoids a ConcurrentModificationException
+//		}
 			
 		
-		cc.writeSortedMapToFile(cc.sortHashMapByValuesD(sortedHashmap));
-		//cc.writeMapToFile();
+//		cc.writeSortedMapToFile(cc.sortHashMapByValuesD(sortedHashmap));
+		cc.writeMapToFile();
 		//System.out.println(getNumberOfPositiveCoTsForArticles(nawsv, 2));
 		//System.out.println(getNumberOfNeutralCoTsForArticles(nawsv, 2));
 		//System.out.println(getNumberOfNegativeCoTsForArticles(nawsv, 2));
