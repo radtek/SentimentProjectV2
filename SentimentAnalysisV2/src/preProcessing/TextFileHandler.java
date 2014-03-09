@@ -86,6 +86,11 @@ public class TextFileHandler {
 		return tfh.getTextFileAsString(tfh.getPath()+"/CoTs/CosRadius10ForTFDF.json", StandardCharsets.UTF_8);
 	}
 	
+	public static String getCotsTFDF() throws IOException {
+		TextFileHandler tfh = new TextFileHandler();
+		return tfh.getTextFileAsString(tfh.getPath()+"/CoTs/cotsTFDF.json", StandardCharsets.UTF_8);
+	}
+	
 	public static void main(String args[]) throws IOException {
 		TextFileHandler tfh = new TextFileHandler();
 		//PRINT ANALYTICAL CLUES

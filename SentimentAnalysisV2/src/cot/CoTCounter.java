@@ -344,38 +344,7 @@ public class CoTCounter {
 		   return sortedMap;
 	}
 	
-	public void generateChiSquaredCots(int index) throws JsonSyntaxException, IOException{
-		double ccFreq = 0;
-		int freqTermV = 0;
-		int freqTermU = 0;
-		int N = 0;
-		
-		
-		Gson gson = new Gson();
-		TextFileHandler tfh = new TextFileHandler();
-		
-		WordCountList cotsWords = gson.fromJson(tfh.getWclList(), WordCountList.class);
-		HashMap<String, Double> cots = gson.fromJson(tfh.getCots(), HashMap.class);
-		
-		System.out.println("Cotswords" + cotsWords.getWords().size() + " Hashmap size: " + cots.size());
-		
-		System.out.println(cots.get("aksje i"));
-		
-		ccFreq = cots.get("aksje i");
-		
-		
-		for(int i=0; i<cotsWords.getWords().size(); i++){
-			if(cotsWords.getWords().get(i).getWord() == "aksje"){
-				freqTermV = cotsWords.getWords().get(i).getCounter();
-			}
-			else if(cotsWords.getWords().get(i).getWord() == "i"){
-				freqTermU = cotsWords.getWords().get(i).getCounter();
-			}
-		}
-		N = cotsWords.getTotalTitleCount()+cotsWords.getTotalLeadTextCount();
-		System.out.println("CCFREQ: " +  ccFreq + "FREQTERMV " + freqTermV + "FREQTERMU " +  freqTermU + " N"  + N);
-
-	}
+	
 	
 	//DOCUMENT FREQUENCY COT FINDER
 	public HashMap<String, CotCountTFDF> generateDocumentFrequencyForCots(HashMap<String, Integer> tfCots) throws IOException{
