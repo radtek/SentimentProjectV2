@@ -70,9 +70,7 @@ public class CotRankingHelper {
 			   ccTF = cotsTFDF.get(key).getTermFrequency();
 			   N = allWordsTFDF.getTotalTitleCount()+allWordsTFDF.getTotalLeadTextCount();
 			   
-			   
 			   System.out.println("U: " + u +" V: " + v);
-			   
 			   System.out.println("ALLE VERDIER: " + "CCTF: " + ccTF + " VTF: " + vTF + " UTF: " + uTF + " N: " + N);
 		}
 		
