@@ -83,7 +83,7 @@ public class TextFileHandler {
 	}
 	public static String getCots() throws IOException {
 		TextFileHandler tfh = new TextFileHandler();
-		return tfh.getTextFileAsString(tfh.getPath()+"/CoTs/cotsRadiusTenNoMainText.json", StandardCharsets.UTF_8);
+		return tfh.getTextFileAsString(tfh.getPath()+"/CoTs/CosRadius10ForTFDF.json", StandardCharsets.UTF_8);
 	}
 	
 	public static void main(String args[]) throws IOException {

@@ -8,6 +8,7 @@ public class PosTaggedWord {
 	public String[] attr;
 	public String input;
 	
+	
 	public PosTaggedWord(){
 		
 	}

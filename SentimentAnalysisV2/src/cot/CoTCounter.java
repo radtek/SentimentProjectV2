@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 import featureExctraction.WordCountList;
 import preProcessing.NewsArticleWithCots;
@@ -31,8 +33,6 @@ public class CoTCounter {
 	 */
 	
 	public HashMap<String, Integer> map;
-	public HashMap<String, CotCountTFDF> tfdfmap;
-	boolean tfdf = false;
 	public int radius;
 	public String filename;
 	
@@ -43,12 +43,7 @@ public class CoTCounter {
 	}
 	public CoTCounter(int radius) {
 		this.map = new HashMap<String, Integer>();
-		this.radius = radius;
-	}
-	public CoTCounter(String filename, int radius, boolean tfdf) {
-		this.tfdf = tfdf;
-		this.filename = filename;
-		this.tfdfmap = new HashMap<String, CotCountTFDF>();
+
 		this.radius = radius;
 	}
 	
@@ -133,7 +128,7 @@ public class CoTCounter {
 //			}
 			ArrayList<PosTaggedWord> ptwList = new ArrayList<PosTaggedWord>();
 			
-			if(nawsv.getPosTaggedLeadText().getPosTaggedWords()!= null){
+			if(nawsv.getPosTaggedTitle().getPosTaggedWords()!= null){
 				for (PosTaggedWord posTaggedWord : nawsv.getPosTaggedTitle().getPosTaggedWords()) {
 					ptwList.add(posTaggedWord);
 				}
@@ -147,32 +142,6 @@ public class CoTCounter {
 			for (int i = 0; i < ptwList.size();i++) {
 				ArrayList<String> cots = getCoTsFromIndex(ptwList, i);
 				addCoTsToMap(cots);
-			}
-		}
-	}
-	
-	public void cotCountArticlesNotMainTextTFDF(JsonHandler jh) {
-		tfdfmap = new HashMap<String, CotCountTFDF>();
-		for (NewsArticleWithStemmedVersion nawsv : jh.stemmedArticles.getNawsv()) {
-//			for (int i = 0; i < nawsv.getAllPosTaggedWords().size();i++) {
-//				System.out.print(nawsv.getAllPosTaggedWords().get(i).stem + " ");
-//			}
-			ArrayList<PosTaggedWord> ptwList = new ArrayList<PosTaggedWord>();
-			
-			if(nawsv.getPosTaggedLeadText().getPosTaggedWords()!= null){
-				for (PosTaggedWord posTaggedWord : nawsv.getPosTaggedTitle().getPosTaggedWords()) {
-					ptwList.add(posTaggedWord);
-				}
-			}	
-			if(nawsv.getPosTaggedLeadText().getPosTaggedWords()!= null){
-				for (PosTaggedWord posTaggedWord : nawsv.getPosTaggedLeadText().getPosTaggedWords()) {
-					ptwList.add(posTaggedWord);
-				}
-			}
-			
-			for (int i = 0; i < ptwList.size();i++) {
-				ArrayList<String> cots = getCoTsFromIndex(ptwList, i);
-				addCoTsToMapTFDF(tfdfmap, cots);
 			}
 		}
 	}
@@ -238,15 +207,6 @@ public class CoTCounter {
 			}
 		return hashmap;
 	}
-	
-	public static HashMap<String, CotCountTFDF> cotCountArticlesTFDF(NewsArticleWithStemmedVersion nawsv, int radius) {
-		HashMap<String, CotCountTFDF> hashmap = new HashMap<String, CotCountTFDF>();
-			for (int i = 0; i < nawsv.getAllPosTaggedWords().size();i++) {
-				ArrayList<String> cots = getCoTsFromIndex(nawsv.getAllPosTaggedWords(), i, radius);
-				hashmap = addCoTsToMapTFDF(hashmap, cots);
-			}
-		return hashmap;
-	}
 
 	public static HashMap<String, Integer> addCoTsToMap(HashMap<String, Integer> hashmap, ArrayList<String> cots) {
 		for (String cot : cots) {
@@ -260,21 +220,6 @@ public class CoTCounter {
 		return hashmap;
 	}
 
-	public static HashMap<String, CotCountTFDF> addCoTsToMapTFDF(HashMap<String, CotCountTFDF> hashmap, ArrayList<String> cots) {
-		for (String cot : cots) {
-			if ( hashmap.containsKey(cot)) {
-				CotCountTFDF cctfdf = new CotCountTFDF();
-				cctfdf = hashmap.get(cot);
-				cctfdf.setTermFrequency(cctfdf.getTermFrequency()+1);
-				hashmap.put(cot, cctfdf);
-			} else {
-				CotCountTFDF cctfdf = new CotCountTFDF();
-				cctfdf.setDocumentFrequency(cctfdf.getDocumentFrequency()+1);
-				hashmap.put(cot, new CotCountTFDF());
-			}
-		}
-		return hashmap;
-	}
 
 	public void addCoTsToMap(ArrayList<String> cots) {
 		for (String cot : cots) {
@@ -304,6 +249,11 @@ public class CoTCounter {
 			} finally {
 			    out.close();
 			}
+	}
+	
+	public void writeTFDFhashmaptofile(HashMap<String, CotCountTFDF> tfdfmap) throws IOException {
+		Gson gson = new Gson();
+		writeToFile(gson.toJson(tfdfmap));
 	}
 	
 	public String getPath() {
@@ -427,7 +377,89 @@ public class CoTCounter {
 
 	}
 	
+	//DOCUMENT FREQUENCY COT FINDER
+	public HashMap<String, CotCountTFDF> generateDocumentFrequencyForCots(HashMap<String, Integer> tfCots) throws IOException{
+		
+		HashMap<String, CotCountTFDF> dfCots = new HashMap<String, CotCountTFDF>();
+		HashMap<String, CotCountTFDF> newTFDFCots = new HashMap<String, CotCountTFDF>();
+		
+		JsonHandler jh = new JsonHandler("/ArticleSteps/4_StemmedArticles/MainDataSetStemmed.json", "stemmed");
+		
+		
+		System.out.println("HENTER TFCOT " + tfCots.get("i i"));
+		System.out.println("Lengde på tfcots " + tfCots.size());
 	
+		
+		
+		for (String key : tfCots.keySet()) {
+		   //System.out.println("Key = " + key + " - " + tfCots.get(key));
+		    CotCountTFDF cctfdf = new CotCountTFDF();
+		    cctfdf.setTermFrequency(tfCots.get(key));
+		    //System.out.println("TERM FREQUENCY :" + cctfdf.getTermFrequency());
+		    dfCots.put(key, cctfdf);
+		}
+	
+	
+		
+		
+		System.out.println("HENTER dfCot " + dfCots.get("i i").getTermFrequency());
+		
+		for (NewsArticleWithStemmedVersion nawsv : jh.stemmedArticles.getNawsv()) {
+			
+			ArrayList<PosTaggedWord> ptwList = new ArrayList<PosTaggedWord>();
+		
+			
+			ArrayList<String> currentArticleCots = new ArrayList<String>();
+			
+			if(nawsv.getPosTaggedTitle().getPosTaggedWords()!= null){
+				for (PosTaggedWord posTaggedWord : nawsv.getPosTaggedTitle().getPosTaggedWords()) {
+					ptwList.add(posTaggedWord);
+				}
+			}
+			
+			if(nawsv.getPosTaggedLeadText().getPosTaggedWords()!= null){
+				for (PosTaggedWord posTaggedWord : nawsv.getPosTaggedLeadText().getPosTaggedWords()) {
+					ptwList.add(posTaggedWord);
+				}
+			}
+			
+			//System.out.println("Størrelse " + ptwList.size());
+			
+			for (int i = 0; i < ptwList.size(); i++) {
+				ArrayList<String> cots = getCoTsFromIndex(ptwList, i);
+
+				for(int k = 0; k < cots.size(); k++){
+					
+					String currentCot = cots.get(k);
+					
+					if(!currentArticleCots.contains(currentCot)){
+						
+						//System.out.println("Den er ikke i denne artikkelens cots");
+						//System.out.println("COT SOM GJELDER " + currentCot);
+						//GET OBJECT FROM MAP
+						CotCountTFDF oldcctfdf = dfCots.get(currentCot);
+				
+						
+						CotCountTFDF newcctfdf = new CotCountTFDF();
+						newcctfdf.termFrequency = oldcctfdf.getTermFrequency();
+						int newDF = oldcctfdf.getDocumentFrequency()+1;
+						newcctfdf.documentFrequency = newDF;
+						//System.out.println("TF: " + newcctfdf.termFrequency + " DF: " + newcctfdf.documentFrequency);
+						
+						
+							
+						dfCots.put(currentCot, newcctfdf);
+						
+					}
+					//ADD CURRENT COT TO ARTICLE COTS
+					currentArticleCots.add(currentCot);
+				}
+	
+			}
+		}
+		
+		return dfCots;
+	}
 	
 	
 	
@@ -436,9 +468,9 @@ public class CoTCounter {
 //		cc.generateChiSquaredCots(10);
 		
 		
-//		JsonHandler jh = new JsonHandler("/ArticleSteps/4_StemmedArticles/MainDataSetStemmed.json", "stemmed");
-//
-//		CoTCounter cc = new CoTCounter("cotsTFDF.json", 10);
+		JsonHandler jh = new JsonHandler("/ArticleSteps/4_StemmedArticles/MainDataSetStemmed.json", "stemmed");
+
+		CoTCounter cc = new CoTCounter("cotsTFDF.json", 10);
 //		cc.cotCountArticlesNotMainText(jh);
 //		
 //		HashMap<String, Integer> sortedHashmap = new HashMap<String, Integer>();
@@ -455,36 +487,20 @@ public class CoTCounter {
 //		        }
 //		        it.remove(); // avoids a ConcurrentModificationException
 //		}
-//			
 //		
-//		cc.writeSortedMapToFile(cc.sortHashMapByValuesD(sortedHashmap));
+		Gson g = new Gson();
+		
+		Type stringIntegergMap = new TypeToken<HashMap<String, Integer>>(){}.getType();
+		HashMap<String, Integer> tfcots = g.fromJson(TextFileHandler.getCots(), stringIntegergMap);
+		//System.out.println(tfcots.get("i i"));
+		
+		
+		cc.writeTFDFhashmaptofile(cc.generateDocumentFrequencyForCots(tfcots));
+//		cc.writeSortedMapToFile(sortedHashmap);
+		
+		
+		
 //		cc.writeMapToFile();
-		
-		
-		
-		JsonHandler jh = new JsonHandler("/ArticleSteps/4_StemmedArticles/MainDataSetStemmed.json", "stemmed");
-
-		CoTCounter cc = new CoTCounter("cotsTFDF.json", 10, true);
-		cc.cotCountArticlesNotMainTextTFDF(jh);
-		
-//		HashMap<String, CotCountTFDF> sortedHashmap = new HashMap<String, CotCountTFDF>();
-//		Iterator it = cc.map.entrySet().iterator();
-//		
-//		
-//		while (it.hasNext()) {
-//				
-//		        Map.Entry pairs = (Map.Entry)it.next();
-//		        System.out.println(pairs.getKey() + " = " + pairs.getValue());
-//		        if(Integer.parseInt(pairs.getValue().toString()) > 0){
-//		        	System.out.println("DSANT");
-//		        	sortedHashmap.put(pairs.getKey().toString(), Integer.parseInt(pairs.getValue().toString()));	
-//		        }
-//		        it.remove(); // avoids a ConcurrentModificationException
-//		}
-			
-		
-//		cc.writeSortedMapToFile(cc.sortHashMapByValuesD(sortedHashmap));
-		cc.writeMapToFile();
 		//System.out.println(getNumberOfPositiveCoTsForArticles(nawsv, 2));
 		//System.out.println(getNumberOfNeutralCoTsForArticles(nawsv, 2));
 		//System.out.println(getNumberOfNegativeCoTsForArticles(nawsv, 2));

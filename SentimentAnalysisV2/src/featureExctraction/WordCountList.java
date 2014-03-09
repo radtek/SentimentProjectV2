@@ -116,32 +116,39 @@ public class WordCountList {
 				wcl.totalTitleCount+=1;
 				for(int j=0; j<articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords().length; j++){
 					
+					String currentWord = articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords()[j].getInput();
 					
+					//ADD WORD TO TF
+					wcl.addWordTF(currentWord, "title");
 					
+					//CHECK IF TITLE HAS CURRENT WORD AND ADD TO DF IF NOT
+					if(!wordsInTitle.contains(currentWord)){
+						wcl.addWordDF(currentWord, "title");
+					}
 					
+					//ADD WORD TO TITLE WORDS OVERVIEW LIST
+					wordsInTitle.add(currentWord);
 					
-					
-					wordsInTitle.add(articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords()[j].getInput());
-					wcl.addWordTF(articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords()[j].getInput(), "title");
-					
-					if(wordsInTitle.contains(articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords()[j].getInput())){
-						wcl.addWordDF(articleSource.getNawpti().get(i).getPosTaggedTitle().getPosTaggedWords()[j].getInput(), "title");
-					}	
 				}
 			}
 			if(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()!=null){
 				wcl.totalLeadTextCount+=1;
 				for(int k=0; k<articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords().length; k++){
 					
-					wordsInLead.add(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput());
 					
-					if(wordsInTitle.contains(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput())|| wordsInLead.contains(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput())){
+					String currentWord = articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput();
+					
+					//CHECK IF WORDS IN TITLE OR WORDS IN LEAD CONTAINS WORD
+					if(wordsInTitle.contains(currentWord)|| wordsInLead.contains(currentWord)){
 						wcl.addWordTF(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput(), "lead");
 					}
 					else{
 						wcl.addWordTF(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput(), "lead");
 						wcl.addWordDF(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput(), "lead");
 					}
+					
+					wordsInLead.add(articleSource.getNawpti().get(i).getPosTaggedLeadText().getPosTaggedWords()[k].getInput());
+					
 				}
 			}
 		}

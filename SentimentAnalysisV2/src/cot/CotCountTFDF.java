@@ -5,8 +5,8 @@ public class CotCountTFDF {
 	int documentFrequency;
 	
 	public CotCountTFDF(){
-		this.termFrequency = 1;
-		this.documentFrequency = 1;
+		this.termFrequency = 0;
+		this.documentFrequency = 0;
 	}
 
 	public int getTermFrequency() {
