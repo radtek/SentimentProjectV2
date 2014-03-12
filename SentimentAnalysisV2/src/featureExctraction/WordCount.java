@@ -12,7 +12,7 @@ public class WordCount {
 	
 	public WordCount(String word){
 		this.word = word;
-		this.termFrequency = 0;
+		this.termFrequency = 1;
 		this.titleCounter = 0;
 		this.leadCounter = 0;
 		this.sentimentValue = "0";

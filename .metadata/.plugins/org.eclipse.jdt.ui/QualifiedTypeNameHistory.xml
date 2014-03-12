@@ -3,10 +3,7 @@
 <fullyQualifiedTypeName name="preProcessing.HegnarTickerScraper"/>
 <fullyQualifiedTypeName name="utils.norwegianStemmer"/>
 <fullyQualifiedTypeName name="utils.Stemmer"/>
-<fullyQualifiedTypeName name="preProcessing.NewsArticleWithStemmedVersion"/>
 <fullyQualifiedTypeName name="preProcessing.NewsArticlesWithPosTaggedWords"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
-<fullyQualifiedTypeName name="preProcessing.NewsArticlesWithStemmedVersion"/>
 <fullyQualifiedTypeName name="java.util.Calendar"/>
 <fullyQualifiedTypeName name="java.util.GregorianCalendar"/>
 <fullyQualifiedTypeName name="utils.DateHelper"/>
@@ -14,8 +11,6 @@
 <fullyQualifiedTypeName name="org.joda.time.JodaTimePermission"/>
 <fullyQualifiedTypeName name="java.util.Date"/>
 <fullyQualifiedTypeName name="org.joda.time.DateTime"/>
-<fullyQualifiedTypeName name="newsAPI.JsonHandler"/>
-<fullyQualifiedTypeName name="preProcessing.NewsArticlesWithTickers"/>
 <fullyQualifiedTypeName name="com.google.gson.Gson"/>
 <fullyQualifiedTypeName name="utils.ArticleSorter"/>
 <fullyQualifiedTypeName name="java.io.FileInputStream"/>
@@ -28,7 +23,22 @@
 <fullyQualifiedTypeName name="com.googlecode.charts4j.LineChart"/>
 <fullyQualifiedTypeName name="com.googlecode.charts4j.GCharts"/>
 <fullyQualifiedTypeName name="com.googlecode.charts4j.Plots"/>
-<fullyQualifiedTypeName name="java.util.HashMap"/>
 <fullyQualifiedTypeName name="utils.ExcelStockParser"/>
 <fullyQualifiedTypeName name="com.googlecode.charts4j.Data"/>
+<fullyQualifiedTypeName name="preProcessing.NewsArticleWithTickers"/>
+<fullyQualifiedTypeName name="preProcessing.NewsArticlesWithTickers"/>
+<fullyQualifiedTypeName name="preProcessing.NewsArticleWithStemmedVersion"/>
+<fullyQualifiedTypeName name="preProcessing.NewsArticlesWithStemmedVersion"/>
+<fullyQualifiedTypeName name="newsAPI.JsonHandler"/>
+<fullyQualifiedTypeName name="preProcessing.NewsArticlesWithCots"/>
+<fullyQualifiedTypeName name="preProcessing.NewsArticleWithCots"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="cot.CoTCounter"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="java.util.LinkedHashMap"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.util.Collections"/>
+<fullyQualifiedTypeName name="preProcessing.PosTaggedWord"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
 </qualifiedTypeNameHistroy>

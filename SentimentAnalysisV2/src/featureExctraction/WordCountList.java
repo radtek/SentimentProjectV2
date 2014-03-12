@@ -43,6 +43,12 @@ public class WordCountList {
 		}
 		if(!alreadyExists){
 			WordCount newWord = new WordCount(word);
+			if(position == "title"){
+				newWord.titleCounter+=1;
+			}
+			else{
+				newWord.leadCounter+=1;
+			}
 			words.add(newWord);
 		}
 	}
